@@ -39,11 +39,11 @@
       <div class="space-y-2">
         <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Quick Select Executive Profile</label>
         <select id="role-select" onchange="handleRoleSelect(this.value)" class="w-full bg-slate-50 border border-gray-300 rounded-lg p-2.5 text-xs font-semibold text-gray-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
-          <option value="dzongdag">Dasho Dzongdag (Apex Approving Authority)</option>
-          <option value="dzongrab">Dasho Dzongrab (Deputy Executive Authority)</option>
-          <option value="planning">Planning Officer (Verification & Review Authority)</option>
-          <option value="finance">Finance Officer (Budget & Sanction Examiner)</option>
-          <option value="cultural">Cultural Officer (Initiating Officer)</option>
+          <option value="DZONGDAG_DZONGRAB">Dasho Dzongdag (Apex Approving Authority)</option>
+          <option value="DZONGRAB">Dasho Dzongrab (Deputy Executive Authority)</option>
+          <option value="PLANNING_OFFICER">Planning Officer (Verification & Review Authority)</option>
+          <option value="FINANCE_OFFICER">Finance Officer (Budget & Sanction Examiner)</option>
+          <option value="CULTURAL_OFFICER">Cultural Officer (Initiating Officer)</option>
         </select>
       </div>
 
@@ -78,7 +78,7 @@
         </div>
         <div class="w-1/4 flex flex-col items-end gap-2">
           <span class="text-xl font-extrabold italic tracking-wider text-amber-600 font-serif">BHUTAN BELIEVE</span>
-          <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-border text-xs">
+          <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded border text-xs">
             <div id="user-avatar" class="w-7 h-7 rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-xs">UD</div>
             <div class="text-right leading-tight">
               <div><strong id="user-display-name" class="text-gray-900">Officer Account</strong></div>
@@ -94,16 +94,19 @@
       <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-200 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-gray-500 uppercase">Executive Governance Scope:</span>
-          <select id="governance-scope" class="bg-slate-800 text-white font-bold text-xs rounded px-3 py-1.5 focus:outline-none">
+          <select id="governance-scope" onchange="handleScopeChange(this.value)" class="bg-slate-800 text-white font-bold text-xs rounded px-3 py-1.5 focus:outline-none">
             <option value="Dzongkhag Administration Scope">Dzongkhag Administration Scope</option>
+            <option value="Cultural Sector">Cultural Sector</option>
+            <option value="Planning Sector">Planning Sector</option>
+            <option value="Finance Sector">Finance Sector</option>
           </select>
         </div>
         <div class="flex items-center gap-4 text-xs">
-          <div><span class="text-gray-500 font-bold">TOTAL COMBINED:</span> <span class="font-bold text-gray-900">Nu. 1,500,000</span></div>
+          <div><span class="text-gray-500 font-bold">TOTAL COMBINED:</span> <span class="font-bold text-gray-900" id="stat-total">Nu. 1,500,000</span></div>
           <span class="text-gray-300">|</span>
-          <div><span class="text-gray-500 font-bold">SANCTIONED:</span> <span class="font-bold text-emerald-600">Nu. 185,000</span></div>
+          <div><span class="text-gray-500 font-bold">SANCTIONED:</span> <span class="font-bold text-emerald-600" id="stat-sanctioned">Nu. 185,000</span></div>
           <span class="text-gray-300">|</span>
-          <div><span class="text-gray-500 font-bold">AVAILABLE:</span> <span class="font-bold text-orange-600">Nu. 1,500,000</span></div>
+          <div><span class="text-gray-500 font-bold">AVAILABLE:</span> <span class="font-bold text-orange-600" id="stat-available">Nu. 1,315,000</span></div>
         </div>
       </div>
 
@@ -111,22 +114,22 @@
         <div class="bg-blue-50/50 border border-blue-200 rounded-xl p-4 flex justify-between items-center">
           <div>
             <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Current Budget</span>
-            <div class="text-xs mt-2 text-gray-700 font-medium">Allocated: <strong class="text-gray-900">Nu. 1,000,000</strong></div>
+            <div class="text-xs mt-2 text-gray-700 font-medium">Allocated: <strong class="text-gray-900" id="cur-allocated">Nu. 1,000,000</strong></div>
           </div>
           <div class="text-right">
-            <div class="text-xs text-emerald-700 font-bold">Sanctioned: Nu. 0</div>
-            <div class="text-xs text-orange-700 font-bold mt-0.5">Available Bal: Nu. 1,000,000</div>
+            <div class="text-xs text-emerald-700 font-bold" id="cur-sanctioned">Sanctioned: Nu. 0</div>
+            <div class="text-xs text-orange-700 font-bold mt-0.5" id="cur-available">Available Bal: Nu. 1,000,000</div>
           </div>
         </div>
 
         <div class="bg-purple-50/50 border border-purple-200 rounded-xl p-4 flex justify-between items-center">
           <div>
             <span class="bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Capital Budget</span>
-            <div class="text-xs mt-2 text-gray-700 font-medium">Allocated: <strong class="text-gray-900">Nu. 500,000</strong></div>
+            <div class="text-xs mt-2 text-gray-700 font-medium">Allocated: <strong class="text-gray-900" id="cap-allocated">Nu. 500,000</strong></div>
           </div>
           <div class="text-right">
-            <div class="text-xs text-emerald-700 font-bold">Sanctioned: Nu. 185,000</div>
-            <div class="text-xs text-purple-700 font-bold mt-0.5">Available Bal: Nu. 500,000</div>
+            <div class="text-xs text-emerald-700 font-bold" id="cap-sanctioned">Sanctioned: Nu. 185,000</div>
+            <div class="text-xs text-purple-700 font-bold mt-0.5" id="cap-available">Available Bal: Nu. 315,000</div>
           </div>
         </div>
       </div>
@@ -134,13 +137,13 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="space-y-4">
           <button onclick="openProfileModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold py-2.5 rounded-lg shadow flex items-center justify-center gap-2">
-            👤 My Profile
+            👤 My Profile & Signatures
           </button>
 
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
             <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">System Modules</h3>
             <ul class="space-y-2 text-xs font-medium text-gray-700">
-              <li class="p-2 bg-gray-50 rounded hover:bg-orange-50 cursor-pointer flex items-center gap-2">📝 Notesheet</li>
+              <li onclick="openNewNotesheetModal()" class="p-2 bg-gray-50 rounded hover:bg-orange-50 cursor-pointer flex items-center gap-2 text-orange-700 font-bold">📝 New Notesheet</li>
               <li class="p-2 bg-gray-50 rounded hover:bg-orange-50 cursor-pointer flex items-center gap-2">➕ Additional Notesheet</li>
               <li class="p-2 bg-gray-50 rounded hover:bg-orange-50 cursor-pointer flex items-center gap-2">💰 Budget & Expenditure</li>
             </ul>
@@ -150,17 +153,11 @@
         <div class="md:col-span-3 bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
           <div class="flex items-center justify-between border-b pb-3">
             <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">📝 SUPERVISORY REVIEW CONSOLE</h3>
+            <span class="text-xs text-gray-500 font-medium" id="console-user-role">Role Scope: Executive</span>
           </div>
 
-          <div class="border rounded-xl p-4 bg-gray-50/50 space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-gray-900">#DAT/CULTURE/2026/101 — Restoration Work at Bartsham Chorten</span>
-              <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Sanctioned</span>
-            </div>
-            <div class="text-xs text-gray-600">Initiated By: Sonam Tobgay (Cultural Officer)</div>
-            <button onclick="openSanctionModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1.5">
-              📄 View Order PDF
-            </button>
+          <div id="notesheet-list-container" class="space-y-4">
+            <!-- Dynamic notesheets rendered here -->
           </div>
         </div>
       </div>
@@ -169,6 +166,40 @@
     <footer class="bg-slate-900 text-gray-400 text-[11px] py-3 text-center border-t border-slate-800 mt-auto">
       www.trashigang.gov.bt | trashigang@trashigang.gov.bt
     </footer>
+  </div>
+
+  <!-- NEW NOTESHEET MODAL -->
+  <div id="notesheet-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 space-y-4">
+      <h3 class="text-sm font-bold text-gray-900 border-b pb-2">Initiate Official Notesheet</h3>
+      <form onsubmit="handleCreateNotesheet(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Subject / Proposal Title</label>
+          <input type="text" id="ns-subject" required class="w-full border rounded p-2 text-xs" placeholder="e.g. Procurement of IT Hardware">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-gray-700 mb-1">Budget Type</label>
+            <select id="ns-budget-type" class="w-full border rounded p-2 text-xs">
+              <option value="Capital">Capital Budget</option>
+              <option value="Current">Current Budget</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-700 mb-1">Requested Amount (Nu.)</label>
+            <input type="number" id="ns-budget" required class="w-full border rounded p-2 text-xs" placeholder="e.g. 50000">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Detailed Justification / Remarks</label>
+          <textarea id="ns-remarks" required rows="3" class="w-full border rounded p-2 text-xs" placeholder="Provide full context for approval..."></textarea>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeNewNotesheetModal()" class="w-1/2 bg-gray-200 text-gray-800 font-bold py-2 rounded">Cancel</button>
+          <button type="submit" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded">Submit Notesheet</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- SANCTION ORDER PRINTABLE MODAL -->
@@ -185,8 +216,8 @@
       </div>
 
       <div class="flex justify-between text-xs font-bold text-gray-800">
-        <div>Ref No: #DAT/CULTURE/2026/101</div>
-        <div>Date: 2026-10-08</div>
+        <div>Ref No: <span id="sanction-ref">#DAT/CULTURE/2026/101</span></div>
+        <div>Date: <span id="sanction-date">2026-10-08</span></div>
       </div>
 
       <div class="bg-gray-100 p-2 rounded text-center text-xs font-bold text-gray-800 uppercase tracking-wide">
@@ -194,28 +225,29 @@
       </div>
 
       <div class="space-y-2 text-xs text-gray-800">
-        <div><strong>Subject:</strong> Restoration Work at Bartsham Chorten</div>
-        <div><strong>Approved Budget:</strong> <span class="text-emerald-700 font-bold">Nu. 185,000</span></div>
+        <div><strong>Subject:</strong> <span id="sanction-subject">Restoration Work at Bartsham Chorten</span></div>
+        <div><strong>Approved Budget:</strong> <span id="sanction-budget" class="text-emerald-700 font-bold">Nu. 185,000</span></div>
       </div>
 
       <div class="border rounded p-3 bg-blue-50/30 text-xs space-y-1">
         <div class="font-bold text-slate-800">Recorded Supervisory Remarks:</div>
-        <div class="italic text-gray-700">Approved as submitted.</div>
+        <div class="italic text-gray-700" id="sanction-remarks-text">Approved as submitted.</div>
       </div>
 
       <div class="grid grid-cols-3 gap-4 pt-6 border-t text-center text-[11px]">
-        <div>
-          <div class="font-bold text-gray-500 uppercase text-[9px] mb-4">INITIATED BY:</div>
-          <div class="font-bold text-gray-800">Initiator Name</div>
-          <div class="text-gray-500 text-[10px]">Role / Sector</div>
+        <div id="print-init-sig-box" class="flex flex-col items-center justify-end min-h-[80px]">
+          <div class="font-bold text-gray-500 uppercase text-[9px] mb-2">INITIATED BY:</div>
+          <div class="font-bold text-gray-800" id="print-initiator-name">Sonam Tobgay</div>
+          <div class="text-gray-500 text-[10px]" id="print-initiator-role">Cultural Officer</div>
         </div>
-        <div>
-          <div class="font-bold text-gray-500 uppercase text-[9px] mb-4">VERIFIED BY:</div>
-          <div class="font-bold text-gray-800">Verification Authority</div>
+        <div id="print-ver-sig-box" class="flex flex-col items-center justify-end min-h-[80px]">
+          <div class="font-bold text-gray-500 uppercase text-[9px] mb-2">VERIFIED BY:</div>
+          <div class="font-bold text-gray-800" id="print-verifier-name">Tashi Namgyal</div>
+          <div class="text-gray-500 text-[10px]">Planning Officer</div>
         </div>
-        <div>
-          <div class="font-bold text-gray-500 uppercase text-[9px] mb-4">APPROVED BY:</div>
-          <div class="font-bold text-gray-800">Dasho Dzongdag / Dzongrab</div>
+        <div id="print-app-sig-box" class="flex flex-col items-center justify-end min-h-[80px]">
+          <div class="font-bold text-gray-500 uppercase text-[9px] mb-2">APPROVED BY:</div>
+          <div class="font-bold text-gray-800" id="print-approver-name">Dasho Dzongdag</div>
           <div class="text-gray-500 text-[10px]">Apex Approving Executive</div>
         </div>
       </div>
@@ -241,6 +273,10 @@
           <label class="block font-semibold text-gray-600 mb-1">Employee ID (EID)</label>
           <input type="text" id="prof-eid" class="w-full border rounded p-2" value="E9991">
         </div>
+        <div>
+          <label class="block font-semibold text-gray-600 mb-1">Digital Signature Image (PNG/JPG URL)</label>
+          <input type="text" id="prof-signature-url" class="w-full border rounded p-2" placeholder="https://... or data:image/png;base64,...">
+        </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeProfileModal()" class="w-1/2 bg-gray-200 text-gray-800 font-bold py-1.5 rounded">Cancel</button>
           <button type="submit" class="w-1/2 bg-slate-800 text-white font-bold py-1.5 rounded">Save Profile</button>
@@ -250,26 +286,99 @@
   </div>
 
   <script>
-    function handleRoleSelect(role) {
+    // System State & Initial Data
+    let currentUser = { name: "Ugyen Dorji", eid: "E9991", roleType: "DZONGDAG_DZONGRAB", roleTitle: "Dasho Dzongdag", sector: "Executive", signatureImg: "" };
+    let selectedGovernanceScope = "Dzongkhag Administration Scope";
+
+    const defaultNotesheets = [
+      {
+        id: "#DAT/CULTURE/2026/101",
+        subject: "Restoration Work at Bartsham Chorten",
+        officer: "Sonam Tobgay (Cultural Officer)",
+        officerUsername: "Sonam Tobgay",
+        initiatorSector: "Cultural Sector",
+        status: "Sanctioned",
+        budget: 185000,
+        budgetType: "Capital",
+        remarks: "Urgent restoration needed for local heritage site preservation.",
+        remarksText: "Approved as submitted.",
+        approvedBy: "Dasho Dzongdag",
+        date: "2026-10-08"
+      }
+    ];
+
+    const defaultMultiBudget = [
+      { id: "Dzongkhag Administration Scope", currentAllocated: 1000000, capitalAllocated: 500000, currentSanctioned: 0, capitalSanctioned: 185000 },
+      { id: "Cultural Sector", currentAllocated: 300000, capitalAllocated: 200000, currentSanctioned: 0, capitalSanctioned: 185000 },
+      { id: "Planning Sector", currentAllocated: 400000, capitalAllocated: 150000, currentSanctioned: 0, capitalSanctioned: 0 },
+      { id: "Finance Sector", currentAllocated: 300000, capitalAllocated: 150000, currentSanctioned: 0, capitalSanctioned: 0 }
+    ];
+
+    function getNotesheets() {
+      const stored = localStorage.getItem("esys_notesheets");
+      return stored ? JSON.parse(stored) : defaultNotesheets;
+    }
+
+    function saveNotesheets(notes) {
+      localStorage.setItem("esys_notesheets", JSON.stringify(notes));
+    }
+
+    function getMultiBudget() {
+      const stored = localStorage.getItem("esys_multibudget");
+      return stored ? JSON.parse(stored) : defaultMultiBudget;
+    }
+
+    function saveMultiBudget(mb) {
+      localStorage.setItem("esys_multibudget", JSON.stringify(mb));
+    }
+
+    function getUsers() {
+      const stored = localStorage.getItem("esys_users");
+      return stored ? JSON.parse(stored) : [
+        { name: "Ugyen Dorji", eid: "E9991", roleType: "DZONGDAG_DZONGRAB", sector: "Executive" },
+        { name: "Karma Tshering", eid: "E8882", roleType: "DZONGRAB", sector: "Executive" },
+        { name: "Tashi Namgyal", eid: "E7773", roleType: "PLANNING_OFFICER", sector: "Planning Sector" },
+        { name: "Kinley Penjor", eid: "E6664", roleType: "FINANCE_OFFICER", sector: "Finance Sector" },
+        { name: "Sonam Tobgay", eid: "E5555", roleType: "CULTURAL_OFFICER", sector: "Cultural Sector" }
+      ];
+    }
+
+    function handleRoleSelect(roleType) {
       const nameInput = document.getElementById('login-name');
       const eidInput = document.getElementById('login-eid');
-      if (role === 'dzongdag') { nameInput.value = 'Ugyen Dorji'; eidInput.value = 'E9991'; }
-      else if (role === 'dzongrab') { nameInput.value = 'Karma Tshering'; eidInput.value = 'E8882'; }
-      else if (role === 'planning') { nameInput.value = 'Tashi Namgyal'; eidInput.value = 'E7773'; }
-      else if (role === 'finance') { nameInput.value = 'Kinley Penjor'; eidInput.value = 'E6664'; }
-      else if (role === 'cultural') { nameInput.value = 'Sonam Tobgay'; eidInput.value = 'E5555'; }
+      if (roleType === 'DZONGDAG_DZONGRAB') { nameInput.value = 'Ugyen Dorji'; eidInput.value = 'E9991'; }
+      else if (roleType === 'DZONGRAB') { nameInput.value = 'Karma Tshering'; eidInput.value = 'E8882'; }
+      else if (roleType === 'PLANNING_OFFICER') { nameInput.value = 'Tashi Namgyal'; eidInput.value = 'E7773'; }
+      else if (roleType === 'FINANCE_OFFICER') { nameInput.value = 'Kinley Penjor'; eidInput.value = 'E6664'; }
+      else if (roleType === 'CULTURAL_OFFICER') { nameInput.value = 'Sonam Tobgay'; eidInput.value = 'E5555'; }
     }
 
     function handleLogin(e) {
       e.preventDefault();
+      const roleSelect = document.getElementById('role-select').value;
       const name = document.getElementById('login-name').value;
       const eid = document.getElementById('login-eid').value;
-      document.getElementById('user-display-name').innerText = name;
-      document.getElementById('user-emp-id').innerText = 'EID: ' + eid;
-      document.getElementById('user-avatar').innerText = name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+      currentUser.name = name;
+      currentUser.eid = eid;
+      currentUser.roleType = roleSelect;
+      
+      if (roleSelect === "DZONGDAG_DZONGRAB") { currentUser.roleTitle = "Dasho Dzongdag"; currentUser.sector = "Executive"; }
+      else if (roleSelect === "DZONGRAB") { currentUser.roleTitle = "Dasho Dzongrab"; currentUser.sector = "Executive"; }
+      else if (roleSelect === "PLANNING_OFFICER") { currentUser.roleTitle = "Planning Officer"; currentUser.sector = "Planning Sector"; }
+      else if (roleSelect === "FINANCE_OFFICER") { currentUser.roleTitle = "Finance Officer"; currentUser.sector = "Finance Sector"; }
+      else if (roleSelect === "CULTURAL_OFFICER") { currentUser.roleTitle = "Cultural Officer"; currentUser.sector = "Cultural Sector"; }
+
+      document.getElementById('user-display-name').innerText = currentUser.name;
+      document.getElementById('user-emp-id').innerText = 'EID: ' + currentUser.eid;
+      document.getElementById('user-avatar').innerText = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+      document.getElementById('console-user-role').innerText = 'Role Scope: ' + currentUser.roleTitle;
+
       document.getElementById('auth-screen').classList.add('hidden');
       document.getElementById('app-screen').classList.remove('hidden');
       document.getElementById('page-body').className = 'bg-gray-100 font-sans min-h-screen';
+
+      renderWorkspace();
     }
 
     function logoutDirectly() {
@@ -278,18 +387,185 @@
       document.getElementById('page-body').className = 'bg-slate-900 font-sans min-h-screen flex items-center justify-center p-4';
     }
 
-    function openSanctionModal() { document.getElementById('sanction-modal').classList.remove('hidden'); }
+    function handleScopeChange(val) {
+      selectedGovernanceScope = val;
+      renderWorkspace();
+    }
+
+    function renderWorkspace() {
+      const mb = getMultiBudget();
+      const currentScopeBudget = mb.find(b => b.id === selectedGovernanceScope) || mb[0];
+
+      const curAllocated = currentScopeBudget.currentAllocated;
+      const curSanctioned = currentScopeBudget.currentSanctioned;
+      const curAvailable = curAllocated - curSanctioned;
+
+      const capAllocated = currentScopeBudget.capitalAllocated;
+      const capSanctioned = currentScopeBudget.capitalSanctioned;
+      const capAvailable = capAllocated - capSanctioned;
+
+      const totalAllocated = curAllocated + capAllocated;
+      const totalSanctioned = curSanctioned + capSanctioned;
+      const totalAvailable = curAvailable + capAvailable;
+
+      document.getElementById('stat-total').innerText = 'Nu. ' + totalAllocated.toLocaleString();
+      document.getElementById('stat-sanctioned').innerText = 'Nu. ' + totalSanctioned.toLocaleString();
+      document.getElementById('stat-available').innerText = 'Nu. ' + totalAvailable.toLocaleString();
+
+      document.getElementById('cur-allocated').innerText = 'Nu. ' + curAllocated.toLocaleString();
+      document.getElementById('cur-sanctioned').innerText = 'Sanctioned: Nu. ' + curSanctioned.toLocaleString();
+      document.getElementById('cur-available').innerText = 'Available Bal: Nu. ' + curAvailable.toLocaleString();
+
+      document.getElementById('cap-allocated').innerText = 'Nu. ' + capAllocated.toLocaleString();
+      document.getElementById('cap-sanctioned').innerText = 'Sanctioned: Nu. ' + capSanctioned.toLocaleString();
+      document.getElementById('cap-available').innerText = 'Available Bal: Nu. ' + capAvailable.toLocaleString();
+
+      const notesheets = getNotesheets();
+      const container = document.getElementById('notesheet-list-container');
+      container.innerHTML = '';
+
+      if (notesheets.length === 0) {
+        container.innerHTML = `<div class="text-xs text-gray-500 italic p-4 text-center">No notesheets recorded in current workspace scope.</div>`;
+        return;
+      }
+
+      notesheets.forEach(n => {
+        const item = document.createElement('div');
+        item.className = 'border rounded-xl p-4 bg-gray-50/50 space-y-3';
+        
+        let statusBg = 'bg-amber-100 text-amber-800';
+        if (n.status === 'Sanctioned') statusBg = 'bg-emerald-100 text-emerald-800';
+        if (n.status === 'Rejected') statusBg = 'bg-red-100 text-red-800';
+
+        let actionButtons = '';
+        if (n.status === 'Pending Sanction' && (currentUser.roleType === 'DZONGDAG_DZONGRAB' || currentUser.roleType === 'DZONGRAB')) {
+          actionButtons = `
+            <div class="flex gap-2 pt-2 border-t">
+              <input type="text" id="rem-${n.id.replace(/[^a-zA-Z0-9]/g, '')}" placeholder="Executive Supervisory Remarks..." class="w-full border rounded p-1.5 text-xs">
+              <button onclick="grantSanction('${n.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1 rounded text-xs shrink-0">Grant Sanction</button>
+              <button onclick="rejectNotesheet('${n.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1 rounded text-xs shrink-0">Reject</button>
+            </div>
+          `;
+        }
+
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-gray-900">${n.id} — ${n.subject}</span>
+            <span class="${statusBg} text-[10px] font-bold px-2 py-0.5 rounded">${n.status}</span>
+          </div>
+          <div class="text-xs text-gray-600">Initiated By: ${n.officer} | Sector: ${n.initiatorSector} | Amount: <strong>Nu. ${(n.budget || 0).toLocaleString()}</strong> (${n.budgetType || 'Capital'})</div>
+          ${n.remarks ? `<div class="text-xs italic text-gray-700 bg-white p-2 rounded border">"${n.remarks}"</div>` : ''}
+          <div class="flex items-center justify-between pt-1">
+            <button onclick="openSanctionModal('${n.id}')" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1.5">
+              📄 View Official Order & Signatures PDF
+            </button>
+          </div>
+          ${actionButtons}
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function openNewNotesheetModal() { document.getElementById('notesheet-modal').classList.remove('hidden'); }
+    function closeNewNotesheetModal() { document.getElementById('notesheet-modal').classList.add('hidden'); }
+
+    function handleCreateNotesheet(e) {
+      e.preventDefault();
+      const subject = document.getElementById('ns-subject').value;
+      const budgetType = document.getElementById('ns-budget-type').value;
+      const budget = parseFloat(document.getElementById('ns-budget').value) || 0;
+      const remarks = document.getElementById('ns-remarks').value;
+
+      const notesheets = getNotesheets();
+      const newId = "#DAT/" + (currentUser.sector.split(' ')[0].toUpperCase()) + "/2026/" + (100 + notesheets.length + 1);
+
+      const newSheet = {
+        id: newId,
+        subject: subject,
+        officer: `${currentUser.name} (${currentUser.roleTitle})`,
+        officerUsername: currentUser.name,
+        initiatorSector: currentUser.sector,
+        status: "Pending Sanction",
+        budget: budget,
+        budgetType: budgetType,
+        remarks: remarks,
+        remarksText: "",
+        approvedBy: "",
+        date: new Date().toISOString().split('T')[0]
+      };
+
+      notesheets.unshift(newSheet);
+      saveNotesheets(notesheets);
+      closeNewNotesheetModal();
+      renderWorkspace();
+      alert("Notesheet Initiated Successfully!");
+    }
+
+    function grantSanction(id) {
+      const notesheets = getNotesheets();
+      const note = notesheets.find(n => n.id === id);
+      if (note) {
+        const remInput = document.getElementById('rem-' + id.replace(/[^a-zA-Z0-9]/g, ''));
+        note.status = "Sanctioned";
+        note.remarksText = remInput ? remInput.value || "Approved as submitted." : "Approved as submitted.";
+        note.approvedBy = currentUser.name;
+
+        const mb = getMultiBudget();
+        mb.forEach(b => {
+          if (b.id === "Dzongkhag Administration Scope" || b.id === note.initiatorSector) {
+            if (note.budgetType === "Current") b.currentSanctioned += note.budget;
+            else b.capitalSanctioned += note.budget;
+          }
+        });
+        saveMultiBudget(mb);
+        saveNotesheets(notesheets);
+        alert("Executive Sanction Granted!");
+        renderWorkspace();
+      }
+    }
+
+    function rejectNotesheet(id) {
+      const notesheets = getNotesheets();
+      const note = notesheets.find(n => n.id === id);
+      if (note) {
+        note.status = "Rejected";
+        saveNotesheets(notesheets);
+        alert("Notesheet Rejected.");
+        renderWorkspace();
+      }
+    }
+
+    function openSanctionModal(id) {
+      const notesheets = getNotesheets();
+      const note = notesheets.find(n => n.id === id) || notesheets[0];
+      
+      document.getElementById('sanction-ref').innerText = note.id;
+      document.getElementById('sanction-date').innerText = note.date || "2026-10-08";
+      document.getElementById('sanction-subject').innerText = note.subject;
+      document.getElementById('sanction-budget').innerText = "Nu. " + (note.budget || 0).toLocaleString();
+      document.getElementById('sanction-remarks-text').innerText = note.remarksText || note.remarks || "Approved as submitted.";
+
+      document.getElementById('print-initiator-name').innerText = note.officerUsername || note.officer || "Sonam Tobgay";
+      document.getElementById('print-initiator-role').innerText = note.initiatorSector || "Initiating Officer";
+      document.getElementById('print-approver-name').innerText = note.approvedBy || "Dasho Dzongdag";
+
+      document.getElementById('sanction-modal').classList.remove('hidden');
+    }
+
     function closeSanctionModal() { document.getElementById('sanction-modal').classList.add('hidden'); }
     function openProfileModal() { document.getElementById('profile-modal').classList.remove('hidden'); }
     function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
-    
+
     function handleSaveProfile(e) {
       e.preventDefault();
-      const name = document.getElementById('prof-name').value;
-      const eid = document.getElementById('prof-eid').value;
-      document.getElementById('user-display-name').innerText = name;
-      document.getElementById('user-emp-id').innerText = 'EID: ' + eid;
+      currentUser.name = document.getElementById('prof-name').value;
+      currentUser.eid = document.getElementById('prof-eid').value;
+      currentUser.signatureImg = document.getElementById('prof-signature-url').value;
+
+      document.getElementById('user-display-name').innerText = currentUser.name;
+      document.getElementById('user-emp-id').innerText = 'EID: ' + currentUser.eid;
       closeProfileModal();
+      alert("Profile and Authentication Details Updated!");
     }
 
     function downloadPDF() {
