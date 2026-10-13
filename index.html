@@ -9,576 +9,1828 @@
   <style>
     @media print {
       body * { visibility: hidden; }
-      #printable-sanction, #printable-sanction * { visibility: visible; }
-      #printable-sanction { position: absolute; left: 0; top: 0; width: 100%; }
+      #printable-sanction, #printable-sanction *, #printable-summary, #printable-summary *, #printable-proposal, #printable-proposal *, #printable-report, #printable-report * { visibility: visible; }
+      #printable-sanction, #printable-summary, #printable-proposal, #printable-report { position: absolute; left: 0; top: 0; width: 100%; }
       .no-print { display: none !important; }
     }
   </style>
 </head>
 <body id="page-body" class="bg-slate-900 font-sans min-h-screen flex items-center justify-center p-4">
 
-  <!-- AUTH SCREEN (LOGIN) -->
-  <div id="auth-screen" class="w-full max-w-xl bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 my-8">
+  <!-- SECURE AUTH CONTAINER -->
+  <div id="auth-screen" class="w-full max-w-xl bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 my-auto">
     <div class="bg-slate-800 text-white p-5 flex items-center justify-between border-b-2 border-orange-500">
       <div class="flex items-center gap-3">
-        <img src="emblem.png" alt="Emblem" class="w-12 h-12 object-contain">
+        <img src="National Emblem of Bhutan (1).png" alt="Emblem" class="w-12 h-12 object-contain" onerror="this.src='National Emblem of Bhutan.png'">
         <div>
           <h2 class="text-sm font-bold text-gray-100">Trashigang Dzongkhag Administration</h2>
-          <p class="text-[11px] text-orange-400 font-medium">Integrated Executive Governance & Sanction Portal</p>
+          <p class="text-[10px] text-orange-400 font-semibold italic">Royal Government of Bhutan</p>
         </div>
       </div>
-      <span class="text-xs bg-slate-700 px-2.5 py-1 rounded-full text-slate-300 font-mono">v2.4.0</span>
+      <span class="bg-slate-700 text-orange-300 text-[11px] font-bold px-2.5 py-1 rounded border border-slate-600">Trashigang E-Sys Portal</span>
     </div>
 
-    <div class="p-6 space-y-5">
-      <div class="bg-orange-50 border-l-4 border-orange-500 p-3 rounded text-xs text-orange-900 flex items-start gap-2">
-        <span class="font-bold shrink-0">NOTICE:</span>
-        <span>Select an official role below or enter customized executive credentials to access system controls.</span>
+    <!-- LOGIN PANEL -->
+    <div id="login-panel" class="p-8 space-y-6">
+      <div class="text-center space-y-1">
+        <h1 class="text-xl font-extrabold text-gray-800">Welcome to Trashigang Dzongkhag E-Sys</h1>
+        <p class="text-xs text-gray-500 italic">Integrated Dzongkhag E-Notesheet & Administrative Workflow System</p>
       </div>
 
-      <div class="space-y-2">
-        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">Quick Select Executive Profile</label>
-        <select id="role-select" onchange="handleRoleSelect(this.value)" class="w-full bg-slate-50 border border-gray-300 rounded-lg p-2.5 text-xs font-semibold text-gray-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
-          <option value="DZONGDAG_DZONGRAB">Dasho Dzongdag (Apex Approving Authority)</option>
-          <option value="DZONGRAB">Dasho Dzongrab (Deputy Executive Authority)</option>
-          <option value="PLANNING_OFFICER">Planning Officer (Verification & Review Authority)</option>
-          <option value="FINANCE_OFFICER">Finance Officer (Budget & Sanction Examiner)</option>
-          <option value="CULTURAL_OFFICER">Cultural Officer (Initiating Officer)</option>
-        </select>
-      </div>
+      <form onsubmit="executeLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">USER NAME / CID / EID</label>
+          <input type="text" id="login-username" required placeholder="Enter User Name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
 
-      <form onsubmit="handleLogin(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Official Name</label>
-          <input type="text" id="login-name" required class="w-full border border-gray-300 rounded-lg p-2 text-xs text-gray-800 focus:ring-2 focus:ring-orange-500 focus:outline-none" value="Ugyen Dorji">
+          <div class="flex justify-between items-center mb-1">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">PASSWORD</label>
+            <button type="button" onclick="showResetPasswordPanel()" class="text-[11px] font-bold text-orange-600 hover:underline">Forgot / Reset Password?</button>
+          </div>
+          <input type="password" id="login-password" required placeholder="Enter Password" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
         </div>
-        <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Employee ID (EID)</label>
-          <input type="text" id="login-eid" required class="w-full border border-gray-300 rounded-lg p-2 text-xs text-gray-800 focus:ring-2 focus:ring-orange-500 focus:outline-none" value="E9991">
+
+        <div id="login-error-msg" class="hidden bg-red-50 border-l-4 border-red-500 p-2.5 rounded text-xs text-red-700 font-bold"></div>
+
+        <div class="space-y-2 pt-2">
+          <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-lg shadow text-xs uppercase tracking-wider transition">
+            Sign In to E-Sys Portal
+          </button>
+
+          <button type="button" onclick="showRegisterPanel()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-lg shadow text-xs uppercase tracking-wider transition">
+            ➕ Register New Official Account
+          </button>
+
+          <button type="button" onclick="loginWithNDI()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow text-xs flex items-center justify-center gap-2 transition">
+            <span class="w-4 h-4 rounded-full border border-white flex items-center justify-center text-[8px] font-extrabold">NDI</span>
+            Login with Bhutan NDI
+          </button>
         </div>
-        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-lg shadow-md transition text-xs uppercase tracking-wider">
-          Access Portal
-        </button>
       </form>
+    </div>
+
+    <!-- RESET PASSWORD PANEL -->
+    <div id="reset-password-panel" class="hidden p-8 space-y-5">
+      <div class="text-center space-y-1">
+        <h1 class="text-xl font-extrabold text-gray-800">Reset Password</h1>
+        <p class="text-xs text-gray-500 italic">Verify your official CID & EID to create a new password</p>
+      </div>
+
+      <form onsubmit="executePasswordReset(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">USER NAME OR CID NUMBER *</label>
+          <input type="text" id="reset-identifier" required placeholder="Enter User Name or CID" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">CONFIRM OFFICIAL EID NUMBER *</label>
+          <input type="text" id="reset-eid" required placeholder="Enter Official EID Number" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">NEW PASSWORD *</label>
+          <input type="password" id="reset-new-password" required placeholder="Enter New Password (Min 3 chars)" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+
+        <div id="reset-error-msg" class="hidden bg-red-50 border-l-4 border-red-500 p-2 rounded text-xs text-red-700 font-bold"></div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="showLoginPanel()" class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 rounded-lg transition">
+            ← Back to Login
+          </button>
+          <button type="submit" class="w-1/2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-lg shadow transition">
+            🔑 Update Password
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- REGISTRATION PANEL -->
+    <div id="register-panel" class="hidden p-8 space-y-5">
+      <div class="text-center space-y-1">
+        <h1 class="text-xl font-extrabold text-gray-800">New User Registration</h1>
+        <p class="text-xs text-gray-500 italic">Create your unique official credential profile</p>
+      </div>
+
+      <form onsubmit="executeRegistration(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">USER NAME *</label>
+            <input type="text" id="reg-username" required placeholder="Unique Login ID" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">FULL NAME *</label>
+            <input type="text" id="reg-name" required placeholder="Full Name" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">CID NUMBER *</label>
+            <input type="text" id="reg-cid" required placeholder="11 Digits CID" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">EID NUMBER *</label>
+            <input type="text" id="reg-eid" required placeholder="Official EID" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">OFFICIAL ROLE / POSITION *</label>
+            <select id="reg-role" required class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+              <option value="Dasho Dzongdag">Dasho Dzongdag</option>
+              <option value="Dzongrab">Dzongrab</option>
+              <option value="PA to Dzongdag">PA to Dzongdag</option>
+              <option value="PA to Dzongrab">PA to Dzongrab</option>
+              <option value="Wamrong Drungpa">Wamrong Drungpa</option>
+              <option value="Thrimshing Drungpa">Thrimshing Drungpa</option>
+              <option value="Sakteng Drungpa">Sakteng Drungpa</option>
+              <option value="Gup">Gup (Gewog Head)</option>
+              <option value="GAO">Gewog Administrative Officer (GAO)</option>
+              <option value="Sector Head">Sector Head / Department Chief</option>
+              <option value="Cultural Officer" selected>Cultural Officer</option>
+              <option value="Finance Officer">Finance Officer</option>
+              <option value="Dzongkhag Engineer">Dzongkhag Engineer</option>
+              <option value="Agriculture Officer">Agriculture Officer</option>
+              <option value="Livestock Officer">Livestock Officer</option>
+              <option value="Planning Officer">Planning Officer</option>
+              <option value="DT Secretary">DT Secretary</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">SECTOR / DEPARTMENT *</label>
+            <select id="reg-sector" required class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+              <option value="Dzongkhag Executive Scope">Dzongkhag Executive Scope</option>
+              <option value="Culture Sector" selected>Culture Sector</option>
+              <option value="Finance Sector">Finance Sector</option>
+              <option value="Engineering Sector">Engineering Sector</option>
+              <option value="Planning Sector">Planning Sector</option>
+              <option value="Agriculture Sector">Agriculture Sector</option>
+              <option value="Livestock Sector">Livestock Sector</option>
+              <option value="Education Sector">Education Sector</option>
+              <option value="Health Sector">Health Sector</option>
+              <option value="Environment Sector">Environment Sector</option>
+              <option value="Land Record Sector">Land Record Sector</option>
+              <option value="ICT Sector">ICT Sector</option>
+              <option value="Legal Sector">Legal Sector</option>
+              <option value="CRCS Sector">Civil Registration & Census Sector (CRCS)</option>
+              <option value="DT Secretariat">DT Secretariat</option>
+              <option value="Wamrong Drungkhag">Wamrong Drungkhag Administration</option>
+              <option value="Thrimshing Drungkhag">Thrimshing Drungkhag Administration</option>
+              <option value="Sakteng Drungkhag">Sakteng Drungkhag Administration</option>
+              <option value="Bartsham Gewog">Bartsham Gewog Administration</option>
+              <option value="Bidung Gewog">Bidung Gewog Administration</option>
+              <option value="Kanglung Gewog">Kanglung Gewog Administration</option>
+              <option value="Kangpara Gewog">Kangpara Gewog Administration</option>
+              <option value="Khaling Gewog">Khaling Gewog Administration</option>
+              <option value="Lumang Gewog">Lumang Gewog Administration</option>
+              <option value="Merak Gewog">Merak Gewog Administration</option>
+              <option value="Phongmey Gewog">Phongmey Gewog Administration</option>
+              <option value="Radhi Gewog">Radhi Gewog Administration</option>
+              <option value="Samkhar Gewog">Samkhar Gewog Administration</option>
+              <option value="Sakteng Gewog">Sakteng Gewog Administration</option>
+              <option value="Shongphu Gewog">Shongphu Gewog Administration</option>
+              <option value="Thrimshing Gewog">Thrimshing Gewog Administration</option>
+              <option value="Uzorong Gewog">Uzorong Gewog Administration</option>
+              <option value="Yangnyer Gewog">Yangnyer Gewog Administration</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">OFFICIAL EMAIL *</label>
+          <input type="email" id="reg-email" required placeholder="username@trashigang.gov.bt" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+
+        <div>
+          <label class="block font-bold text-gray-700 mb-1">CREATE PASSWORD *</label>
+          <input type="password" id="reg-password" required placeholder="Min. 3 characters" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+
+        <div id="reg-error-msg" class="hidden bg-red-50 border-l-4 border-red-500 p-2 rounded text-xs text-red-700 font-bold"></div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="showLoginPanel()" class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 rounded-lg transition">
+            ← Back to Login
+          </button>
+          <button type="submit" class="w-1/2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-lg shadow transition">
+            Save & Create Account
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-gray-50 p-3 text-center text-[11px] text-gray-500 border-t">
+      Dzongkhag Administration, Trashigang © 2026. Official RGoB System.
     </div>
   </div>
 
-  <!-- APP SCREEN (MAIN DASHBOARD) -->
+  <!-- MAIN SYSTEM DASHBOARD -->
   <div id="app-screen" class="hidden fixed inset-0 bg-gray-100 flex flex-col overflow-y-auto">
+    
     <header class="bg-white border-b-2 border-orange-500 shadow-sm px-6 py-4 no-print">
       <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
         <div class="w-1/4 flex justify-start">
-          <img src="emblem.png" alt="Emblem" class="w-16 h-16 object-contain shrink-0">
+          <img src="National Emblem of Bhutan (1).png" alt="Emblem" class="w-16 h-16 object-contain" onerror="this.src='National Emblem of Bhutan.png'">
         </div>
+
         <div class="w-2/4 text-center">
-          <h2 class="text-xs text-gray-700 font-bold">དཔལ་ལྡན་འབྲུག་པ་རྒྱལ་ལོ་ ཇོ་ཐམས་ཅད་ལས་རྣམ་པར་རྒྱལ་བར་གྱུར་ཅིག།</h2>
+          <h2 class="text-xs text-gray-700 font-bold">དཔལ་ལྡན་འབྲུག་གཞུང་། རྫོང་ཁག་བདག་སྐྱོང་ བཀྲིས་སྒང་།</h2>
           <h1 class="text-lg font-bold text-gray-900 uppercase tracking-wide">ROYAL GOVERNMENT OF BHUTAN</h1>
           <h2 class="text-sm font-semibold text-orange-600">Dzongkhag Administration, Trashigang</h2>
-          <p class="text-xs italic text-gray-600 mt-0.5">"Strive to learn, improve & transform with times"</p>
+          <p class="text-xs italic text-gray-600 mt-0.5">“Strive to learn, improve & transform with times”</p>
         </div>
+
         <div class="w-1/4 flex flex-col items-end gap-2">
-          <span class="text-xl font-extrabold italic tracking-wider text-amber-600 font-serif">BHUTAN BELIEVE</span>
-          <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded border text-xs">
-            <div id="user-avatar" class="w-7 h-7 rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-xs">UD</div>
+          <div class="text-right">
+            <span class="text-xl font-extrabold italic tracking-wider text-amber-600 font-serif inline-block">BHUTAN BELIEVE</span>
+          </div>
+
+          <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded border border-gray-200 text-xs">
+            <div id="user-avatar" class="w-7 h-7 rounded-full bg-orange-600 text-white font-bold flex items-center justify-center text-[11px]">
+              OF
+            </div>
             <div class="text-right leading-tight">
               <div><strong id="user-display-name" class="text-gray-900">Officer Account</strong></div>
               <div class="text-[10px] text-gray-500" id="user-emp-id">EID: Verified</div>
             </div>
+            <button onclick="logoutDirectly()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-0.5 rounded text-[10px] shadow transition ml-1">
+              🔒 Log Out
+            </button>
           </div>
-          <button onclick="logoutDirectly()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">Log Out</button>
         </div>
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-6 space-y-6 w-full flex-1">
-      <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-200 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-gray-500 uppercase">Executive Governance Scope:</span>
-          <select id="governance-scope" onchange="handleScopeChange(this.value)" class="bg-slate-800 text-white font-bold text-xs rounded px-3 py-1.5 focus:outline-none">
-            <option value="Dzongkhag Administration Scope">Dzongkhag Administration Scope</option>
-            <option value="Cultural Sector">Cultural Sector</option>
-            <option value="Planning Sector">Planning Sector</option>
-            <option value="Finance Sector">Finance Sector</option>
-          </select>
+    <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-grow no-print space-y-6">
+      <!-- GOVERNANCE SCOPE SELECTOR & DUAL SUMMARY BAR -->
+      <div id="scope-summary-bar" class="bg-white p-4 rounded-lg shadow border flex flex-col space-y-3">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-gray-700 uppercase">Executive Governance Scope:</span>
+            <select id="governance-scope-selector" onchange="changeGovernanceScope(this.value)" class="bg-blue-900 text-white text-xs font-bold px-3 py-1.5 rounded shadow outline-none cursor-pointer">
+              <option value="dzongkhag">Dzongkhag Administration Scope</option>
+              <option value="drungkhag">Drungkhag Administrations Scope</option>
+              <option value="gewog">Gewog Administrations Scope</option>
+            </select>
+          </div>
+
+          <!-- OVERALL TOTAL -->
+          <div class="flex items-center gap-2 text-xs font-extrabold bg-slate-100 px-3 py-1.5 rounded border">
+            <span class="text-gray-700 uppercase">Total Combined:</span>
+            <span class="text-blue-900" id="scope-total-allocated">Nu. 0</span> | 
+            <span class="text-green-800" id="scope-total-sanctioned">Nu. 0</span> | 
+            <span class="text-amber-800" id="scope-total-balance">Nu. 0</span>
+          </div>
         </div>
-        <div class="flex items-center gap-4 text-xs">
-          <div><span class="text-gray-500 font-bold">TOTAL COMBINED:</span> <span class="font-bold text-gray-900" id="stat-total">Nu. 1,500,000</span></div>
-          <span class="text-gray-300">|</span>
-          <div><span class="text-gray-500 font-bold">SANCTIONED:</span> <span class="font-bold text-emerald-600" id="stat-sanctioned">Nu. 185,000</span></div>
-          <span class="text-gray-300">|</span>
-          <div><span class="text-gray-500 font-bold">AVAILABLE:</span> <span class="font-bold text-orange-600" id="stat-available">Nu. 1,315,000</span></div>
+
+        <!-- DUAL CATEGORY CARDS (CURRENT & CAPITAL) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 border-t text-xs">
+          <!-- CURRENT BUDGET CARD -->
+          <div class="bg-blue-50/70 border border-blue-200 rounded-lg p-3 flex justify-between items-center">
+            <div>
+              <span class="bg-blue-700 text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Current Budget</span>
+              <div class="text-[11px] text-blue-900 font-bold mt-1">Allocated: <span id="current-allocated">Nu. 0</span></div>
+            </div>
+            <div class="text-right">
+              <div class="text-[11px] text-green-800 font-bold">Sanctioned: <span id="current-sanctioned">Nu. 0</span></div>
+              <div class="text-xs font-extrabold text-blue-900 mt-0.5">Available Bal: <span id="current-balance" class="text-amber-800">Nu. 0</span></div>
+            </div>
+          </div>
+
+          <!-- CAPITAL BUDGET CARD -->
+          <div class="bg-purple-50/70 border border-purple-200 rounded-lg p-3 flex justify-between items-center">
+            <div>
+              <span class="bg-purple-700 text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Capital Budget</span>
+              <div class="text-[11px] text-purple-900 font-bold mt-1">Allocated: <span id="capital-allocated">Nu. 0</span></div>
+            </div>
+            <div class="text-right">
+              <div class="text-[11px] text-green-800 font-bold">Sanctioned: <span id="capital-sanctioned">Nu. 0</span></div>
+              <div class="text-xs font-extrabold text-purple-900 mt-0.5">Available Bal: <span id="capital-balance" class="text-amber-800">Nu. 0</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="bg-blue-50/50 border border-blue-200 rounded-xl p-4 flex justify-between items-center">
-          <div>
-            <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Current Budget</span>
-            <div class="text-xs mt-2 text-gray-700 font-medium">Allocated: <strong class="text-gray-900" id="cur-allocated">Nu. 1,000,000</strong></div>
-          </div>
-          <div class="text-right">
-            <div class="text-xs text-emerald-700 font-bold" id="cur-sanctioned">Sanctioned: Nu. 0</div>
-            <div class="text-xs text-orange-700 font-bold mt-0.5" id="cur-available">Available Bal: Nu. 1,000,000</div>
-          </div>
-        </div>
-
-        <div class="bg-purple-50/50 border border-purple-200 rounded-xl p-4 flex justify-between items-center">
-          <div>
-            <span class="bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Capital Budget</span>
-            <div class="text-xs mt-2 text-gray-700 font-medium">Allocated: <strong class="text-gray-900" id="cap-allocated">Nu. 500,000</strong></div>
-          </div>
-          <div class="text-right">
-            <div class="text-xs text-emerald-700 font-bold" id="cap-sanctioned">Sanctioned: Nu. 185,000</div>
-            <div class="text-xs text-purple-700 font-bold mt-0.5" id="cap-available">Available Bal: Nu. 315,000</div>
-          </div>
-        </div>
-      </div>
-
+      <!-- MAIN LAYOUT: SIDEBAR NAVIGATION + WORKSPACE -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="space-y-4">
-          <button onclick="openProfileModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold py-2.5 rounded-lg shadow flex items-center justify-center gap-2">
-            👤 My Profile & Signatures
-          </button>
+          <div class="bg-white p-4 rounded-lg shadow border text-center space-y-3">
+            <button onclick="openProfileModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-3 rounded-lg text-xs shadow flex items-center justify-center gap-2">
+              👤 My Profile
+            </button>
+            <span class="text-[10px] text-gray-500 italic block">Click to view/edit confidential details, signature & seal</span>
+          </div>
 
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">System Modules</h3>
-            <ul class="space-y-2 text-xs font-medium text-gray-700">
-              <li onclick="openNewNotesheetModal()" class="p-2 bg-gray-50 rounded hover:bg-orange-50 cursor-pointer flex items-center gap-2 text-orange-700 font-bold">📝 New Notesheet</li>
-              <li class="p-2 bg-gray-50 rounded hover:bg-orange-50 cursor-pointer flex items-center gap-2">➕ Additional Notesheet</li>
-              <li class="p-2 bg-gray-50 rounded hover:bg-orange-50 cursor-pointer flex items-center gap-2">💰 Budget & Expenditure</li>
-            </ul>
+          <div class="bg-white rounded-lg shadow border overflow-hidden">
+            <div class="bg-gray-100 p-3 font-bold text-xs text-gray-700 uppercase border-b">
+              SYSTEM MODULES
+            </div>
+            <nav class="p-2 space-y-1 text-xs">
+              <button onclick="switchTab('notesheet')" id="nav-btn-notesheet" class="w-full text-left px-3 py-2 rounded font-bold text-gray-700 hover:bg-gray-100">
+                📝 Notesheet
+              </button>
+
+              <div>
+                <button onclick="toggleAdditionalSubmenu()" class="w-full text-left px-3 py-2 rounded font-bold text-gray-700 hover:bg-gray-100 flex justify-between items-center">
+                  <span>➕ Additional Notesheet</span>
+                  <span id="additional-submenu-icon">▼</span>
+                </button>
+                <div id="additional-submenu" class="hidden pl-4 pr-1 py-1 space-y-1">
+                  <button onclick="switchTab('bill-settlement')" id="nav-btn-bill-settlement" class="w-full text-left px-2 py-1.5 rounded font-semibold text-gray-600 hover:bg-orange-50 hover:text-orange-700">
+                    🧾 Bill Settlement Notesheet
+                  </button>
+                </div>
+              </div>
+
+              <button onclick="switchTab('application')" id="nav-btn-application" class="w-full text-left px-3 py-2 rounded font-bold text-gray-700 hover:bg-gray-100">
+                📋 Proposal & Application Form
+              </button>
+
+              <button onclick="switchTab('submission-report')" id="nav-btn-submission-report" class="w-full text-left px-3 py-2 rounded font-bold text-gray-700 hover:bg-gray-100">
+                📑 Submission Report Module
+              </button>
+
+              <button onclick="switchTab('budget')" id="nav-btn-budget" class="w-full text-left px-3 py-2 rounded font-bold text-gray-700 hover:bg-gray-100">
+                💰 Budget & Expenditure
+              </button>
+
+              <button onclick="switchTab('summary-report')" id="nav-btn-summary-report" class="w-full text-left px-3 py-2 rounded font-bold text-blue-900 hover:bg-blue-50 flex items-center gap-1">
+                <span>📊 Summary Report (Dzongdag/Dzongrab)</span>
+              </button>
+            </nav>
           </div>
         </div>
 
-        <div class="md:col-span-3 bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
-          <div class="flex items-center justify-between border-b pb-3">
-            <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">📝 SUPERVISORY REVIEW CONSOLE</h3>
-            <span class="text-xs text-gray-500 font-medium" id="console-user-role">Role Scope: Executive</span>
-          </div>
-
-          <div id="notesheet-list-container" class="space-y-4">
-            <!-- Dynamic notesheets rendered here -->
-          </div>
-        </div>
+        <div class="md:col-span-3" id="main-portal-workspace"></div>
       </div>
     </main>
 
-    <footer class="bg-slate-900 text-gray-400 text-[11px] py-3 text-center border-t border-slate-800 mt-auto">
-      www.trashigang.gov.bt | trashigang@trashigang.gov.bt
+    <footer class="bg-gray-800 text-gray-300 py-3 text-center text-xs no-print">
+      <p>www.trashigang.gov.bt | trashigang@trashigang.gov.bt</p>
     </footer>
   </div>
 
-  <!-- NEW NOTESHEET MODAL -->
-  <div id="notesheet-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl shadow-2xl max-w-xl w-full p-6 space-y-4">
-      <h3 class="text-sm font-bold text-gray-900 border-b pb-2">Initiate Official Notesheet</h3>
-      <form onsubmit="handleCreateNotesheet(event)" class="space-y-3 text-xs">
+  <!-- ADD / EDIT BUDGET ACTIVITY MODAL -->
+  <div id="budget-activity-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-gray-200">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 id="budget-modal-title" class="text-sm font-bold text-gray-800 uppercase">➕ Add New Activity & Budget Line</h3>
+        <button onclick="closeBudgetActivityModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
+      </div>
+
+      <form onsubmit="saveBudgetActivity(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="budget-edit-scope">
+        <input type="hidden" id="budget-edit-id">
+
         <div>
-          <label class="block font-semibold text-gray-700 mb-1">Subject / Proposal Title</label>
-          <input type="text" id="ns-subject" required class="w-full border rounded p-2 text-xs" placeholder="e.g. Procurement of IT Hardware">
+          <label class="block font-semibold text-gray-700 mb-1">Select Governance Scope *</label>
+          <select id="budget-scope-select" required class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+            <option value="dzongkhag">Dzongkhag Administration Scope</option>
+            <option value="drungkhag">Drungkhag Administrations Scope</option>
+            <option value="gewog">Gewog Administrations Scope</option>
+          </select>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+
+        <div class="grid grid-cols-3 gap-2">
+          <div class="col-span-2">
+            <label class="block font-semibold text-gray-700 mb-1">Activity Name / Description *</label>
+            <input type="text" id="budget-activity-name" required placeholder="e.g. Travel Allowance for Dancers" class="w-full border rounded px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+          </div>
           <div>
-            <label class="block font-semibold text-gray-700 mb-1">Budget Type</label>
-            <select id="ns-budget-type" class="w-full border rounded p-2 text-xs">
-              <option value="Capital">Capital Budget</option>
+            <label id="budget-code-label" class="block font-semibold text-gray-700 mb-1">Code *</label>
+            <input type="text" id="budget-obc-code" required placeholder="e.g. 51.01" class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Allocated Budget Amount (Nu.) *</label>
+          <input type="number" id="budget-allocated-amount" required placeholder="e.g. 1000000" class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold text-gray-700 mb-1">Budget Type / Category *</label>
+            <select id="budget-category-select" onchange="updateModalCodeLabel(this.value)" class="w-full border rounded px-2 py-1.5 font-semibold text-gray-800">
               <option value="Current">Current Budget</option>
+              <option value="Capital">Capital Budget</option>
             </select>
           </div>
           <div>
-            <label class="block font-semibold text-gray-700 mb-1">Requested Amount (Nu.)</label>
-            <input type="number" id="ns-budget" required class="w-full border rounded p-2 text-xs" placeholder="e.g. 50000">
+            <label class="block font-semibold text-gray-700 mb-1">Tier / Sub-Unit / Sector</label>
+            <input type="text" id="budget-tier-input" placeholder="e.g. Culture Sector" class="w-full border rounded px-2 py-1.5 text-gray-800">
           </div>
         </div>
-        <div>
-          <label class="block font-semibold text-gray-700 mb-1">Detailed Justification / Remarks</label>
-          <textarea id="ns-remarks" required rows="3" class="w-full border rounded p-2 text-xs" placeholder="Provide full context for approval..."></textarea>
-        </div>
+
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeNewNotesheetModal()" class="w-1/2 bg-gray-200 text-gray-800 font-bold py-2 rounded">Cancel</button>
-          <button type="submit" class="w-1/2 bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded">Submit Notesheet</button>
+          <button type="button" onclick="closeBudgetActivityModal()" class="w-1/2 bg-gray-200 text-gray-800 font-bold py-1.5 rounded text-xs">Cancel</button>
+          <button type="submit" class="w-1/2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-1.5 rounded shadow text-xs">💾 Save Budget Activity</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- SANCTION ORDER PRINTABLE MODAL -->
-  <div id="sanction-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-lg shadow-2xl max-w-3xl w-full p-8 space-y-6 max-h-[90vh] overflow-y-auto" id="printable-sanction">
-      <div class="flex items-center justify-center gap-4 border-b-2 border-orange-600 pb-4 relative">
-        <img src="emblem.png" alt="Emblem" class="w-16 h-16 object-contain shrink-0">
-        <div class="text-center">
-          <h3 class="text-xs font-bold text-gray-700">དཔལ་ལྡན་འབྲུག་པ་རྒྱལ་ལོ་ ཇོ་ཐམས་ཅད་ལས་རྣམ་པར་རྒྱལ་བར་གྱུར་ཅིག།</h3>
-          <h2 class="text-base font-bold text-gray-900 uppercase">ROYAL GOVERNMENT OF BHUTAN</h2>
-          <h3 class="text-xs font-bold text-orange-600">Dzongkhag Administration, Trashigang</h3>
+  <!-- MID-YEAR BUDGET BALANCE UPDATE MODAL -->
+  <div id="update-balance-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4 border border-gray-200">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="text-sm font-bold text-gray-800 uppercase">Update Mid-Year Budget Balance</h3>
+        <button onclick="closeUpdateBalanceModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
+      </div>
+
+      <form onsubmit="saveMidYearBalance(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Select Activity Budget Line *</label>
+          <select id="balance-update-activity-select" required class="w-full border rounded px-2.5 py-1.5 text-gray-800 font-semibold outline-none focus:ring-1 focus:ring-orange-500">
+          </select>
         </div>
-        <span class="absolute right-0 text-amber-600 font-serif font-bold text-sm italic">BHUTAN BELIEVE</span>
-      </div>
 
-      <div class="flex justify-between text-xs font-bold text-gray-800">
-        <div>Ref No: <span id="sanction-ref">#DAT/CULTURE/2026/101</span></div>
-        <div>Date: <span id="sanction-date">2026-10-08</span></div>
-      </div>
-
-      <div class="bg-gray-100 p-2 rounded text-center text-xs font-bold text-gray-800 uppercase tracking-wide">
-        OFFICIAL EXECUTIVE SANCTION ORDER
-      </div>
-
-      <div class="space-y-2 text-xs text-gray-800">
-        <div><strong>Subject:</strong> <span id="sanction-subject">Restoration Work at Bartsham Chorten</span></div>
-        <div><strong>Approved Budget:</strong> <span id="sanction-budget" class="text-emerald-700 font-bold">Nu. 185,000</span></div>
-      </div>
-
-      <div class="border rounded p-3 bg-blue-50/30 text-xs space-y-1">
-        <div class="font-bold text-slate-800">Recorded Supervisory Remarks:</div>
-        <div class="italic text-gray-700" id="sanction-remarks-text">Approved as submitted.</div>
-      </div>
-
-      <div class="grid grid-cols-3 gap-4 pt-6 border-t text-center text-[11px]">
-        <div id="print-init-sig-box" class="flex flex-col items-center justify-end min-h-[80px]">
-          <div class="font-bold text-gray-500 uppercase text-[9px] mb-2">INITIATED BY:</div>
-          <div class="font-bold text-gray-800" id="print-initiator-name">Sonam Tobgay</div>
-          <div class="text-gray-500 text-[10px]" id="print-initiator-role">Cultural Officer</div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Updated Exact Available Balance (Nu.) *</label>
+          <input type="number" id="balance-update-amount" required placeholder="e.g. 250000" class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
         </div>
-        <div id="print-ver-sig-box" class="flex flex-col items-center justify-end min-h-[80px]">
-          <div class="font-bold text-gray-500 uppercase text-[9px] mb-2">VERIFIED BY:</div>
-          <div class="font-bold text-gray-800" id="print-verifier-name">Tashi Namgyal</div>
-          <div class="text-gray-500 text-[10px]">Planning Officer</div>
-        </div>
-        <div id="print-app-sig-box" class="flex flex-col items-center justify-end min-h-[80px]">
-          <div class="font-bold text-gray-500 uppercase text-[9px] mb-2">APPROVED BY:</div>
-          <div class="font-bold text-gray-800" id="print-approver-name">Dasho Dzongdag</div>
-          <div class="text-gray-500 text-[10px]">Apex Approving Executive</div>
-        </div>
-      </div>
 
-      <div class="flex justify-end gap-2 pt-4 border-t no-print">
-        <button onclick="closeSanctionModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold px-4 py-2 rounded">Close</button>
-        <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded">🖨️ Print</button>
-        <button onclick="downloadPDF()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded">📄 PDF</button>
-      </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeUpdateBalanceModal()" class="w-1/2 bg-gray-200 text-gray-800 font-bold py-1.5 rounded text-xs">Cancel</button>
+          <button type="submit" class="w-1/2 bg-slate-900 hover:bg-slate-800 text-white font-bold py-1.5 rounded shadow text-xs">💾 Save Updated Balance</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <!-- MY PROFILE MODAL -->
-  <div id="profile-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
-      <h3 class="text-sm font-bold text-gray-900 border-b pb-2">Profile & Digital Authentication</h3>
-      <form onsubmit="handleSaveProfile(event)" class="space-y-3 text-xs">
+  <div id="profile-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50" onclick="closeProfileModalOnOutside(event)">
+    <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border border-gray-200 relative" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="text-sm font-bold text-gray-800 uppercase">My Private Confidential Profile</h3>
+        <button onclick="closeProfileModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
+      </div>
+
+      <form onsubmit="saveProfileUpdates(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block font-semibold text-gray-600 mb-1">Official Name</label>
-          <input type="text" id="prof-name" class="w-full border rounded p-2" value="Ugyen Dorji">
+          <label class="block font-semibold text-gray-700 mb-0.5">User Name (Login ID)</label>
+          <input type="text" id="edit-profile-username" disabled class="w-full border bg-gray-100 rounded px-2.5 py-1 text-gray-600 font-bold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold text-gray-700 mb-0.5">CID Number *</label>
+            <input type="text" id="edit-profile-cid" required class="w-full border rounded px-2 py-1 text-gray-800 font-bold outline-none focus:ring-1 focus:ring-orange-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-700 mb-0.5">EID Number *</label>
+            <input type="text" id="edit-profile-eid" required class="w-full border rounded px-2 py-1 text-gray-800 font-bold outline-none focus:ring-1 focus:ring-orange-500">
+          </div>
         </div>
         <div>
-          <label class="block font-semibold text-gray-600 mb-1">Employee ID (EID)</label>
-          <input type="text" id="prof-eid" class="w-full border rounded p-2" value="E9991">
+          <label class="block font-semibold text-gray-700 mb-0.5">Full Name *</label>
+          <input type="text" id="edit-profile-name" required class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block font-semibold text-gray-600 mb-1">Digital Signature Image (PNG/JPG URL)</label>
-          <input type="text" id="prof-signature-url" class="w-full border rounded p-2" placeholder="https://... or data:image/png;base64,...">
+          <label class="block font-semibold text-gray-700 mb-0.5">Designation / Role *</label>
+          <input type="text" id="edit-profile-role" required class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
         </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-0.5">Sector / Department *</label>
+          <input type="text" id="edit-profile-sector" required class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
+        </div>
+
+        <div id="drungkhag-supervisor-profile-field" class="hidden">
+          <label class="block font-semibold text-blue-900 mb-0.5">Drungkhag Sector Head Supervisor Designation</label>
+          <input type="text" id="edit-profile-supervisor" placeholder="e.g. Wamrong Sector Head / Engineer" class="w-full border bg-blue-50 rounded px-2.5 py-1 font-semibold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-gray-700 mb-0.5">Official Email *</label>
+          <input type="email" id="edit-profile-email" required class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
+        </div>
+
+        <div class="border-t pt-3 space-y-3">
+          <div class="font-bold text-gray-800 uppercase text-[11px]">Official Digital Signature & Seal Upload</div>
+          <div>
+            <label class="block text-[10px] font-bold text-gray-600 mb-1">Upload Digital Signature Image (PNG/JPG)</label>
+            <input type="file" id="upload-signature-file" accept="image/*" onchange="handleSignatureUpload(event)" class="w-full text-[10px]">
+            <div id="sig-preview-container" class="mt-1 hidden">
+              <img id="sig-preview" class="h-12 object-contain border p-1 rounded bg-gray-50" alt="Signature Preview">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-gray-600 mb-1">Upload Official Stamp Seal (PNG/JPG)</label>
+            <input type="file" id="upload-seal-file" accept="image/*" onchange="handleSealUpload(event)" class="w-full text-[10px]">
+            <div id="seal-preview-container" class="mt-1 hidden">
+              <img id="seal-preview" class="h-14 object-contain border p-1 rounded bg-gray-50" alt="Seal Preview">
+            </div>
+          </div>
+        </div>
+
         <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeProfileModal()" class="w-1/2 bg-gray-200 text-gray-800 font-bold py-1.5 rounded">Cancel</button>
-          <button type="submit" class="w-1/2 bg-slate-800 text-white font-bold py-1.5 rounded">Save Profile</button>
+          <button type="button" onclick="closeProfileModal()" class="w-1/2 bg-gray-200 text-gray-800 font-bold py-1.5 rounded text-xs">
+            Cancel
+          </button>
+          <button type="submit" class="w-1/2 bg-slate-800 hover:bg-slate-900 text-white font-bold py-1.5 rounded shadow text-xs">
+            💾 Save Profile
+          </button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- SANCTION PRINTABLE MODAL -->
+  <div id="sanction-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-lg shadow-2xl max-w-3xl w-full p-8 space-y-6 max-h-[90vh] overflow-y-auto" id="printable-sanction">
+      <div class="flex items-center justify-between border-b-2 border-orange-600 pb-4">
+        <div class="w-1/4 flex justify-start">
+          <img src="National Emblem of Bhutan (1).png" alt="Emblem" class="w-16 h-16 object-contain" onerror="this.src='National Emblem of Bhutan.png'">
+        </div>
+        <div class="w-2/4 text-center">
+          <h3 class="text-xs font-bold text-gray-700">དཔལ་ལྡན་འབྲུག་གཞུང་། རྫོང་ཁག་བདག་སྐྱོང་ བཀྲིས་སྒང་།</h3>
+          <h2 class="text-base font-bold text-gray-900 uppercase">ROYAL GOVERNMENT OF BHUTAN</h2>
+          <h3 class="text-xs font-bold text-orange-600">Dzongkhag Administration, Trashigang</h3>
+          <p class="text-[10px] italic text-gray-500">“Strive to learn, improve & transform with times”</p>
+        </div>
+        <div class="w-1/4 text-right">
+          <span class="text-lg font-extrabold italic tracking-wider text-amber-600 font-serif inline-block">BHUTAN BELIEVE</span>
+        </div>
+      </div>
+
+      <div class="space-y-3 text-xs text-gray-800">
+        <div class="flex justify-between font-semibold border-b pb-2">
+          <span>Ref No: <strong id="sanction-ref">#DAT/CULTURE/2026/101</strong></span>
+          <span id="sanction-dispatch-container" class="hidden">Dispatch No: <strong id="sanction-dispatch" class="text-orange-700">DAT/DISPATCH/2026/101</strong></span>
+          <span id="sanction-date">Date: 2026-10-08</span>
+        </div>
+
+        <h3 class="text-sm font-bold text-center text-gray-900 uppercase py-1.5 bg-gray-100 rounded">OFFICIAL EXECUTIVE SANCTION ORDER</h3>
+
+        <div><strong>Subject:</strong> <span id="sanction-subject">Approval for Restoration Work at Bartsham Chorten</span></div>
+        <div><strong>Notesheet Category:</strong> <span id="sanction-type-badge" class="font-bold text-blue-900">Financial Notesheet</span></div>
+        <div><strong>Approved Budget:</strong> <span id="sanction-budget" class="text-green-800 font-bold">Nu. 185,000</span></div>
+
+        <div id="sanction-itemized-table-container" class="space-y-1">
+          <strong>Approved Itemized Cost Breakdown & Balance:</strong>
+          <table class="w-full text-left border-collapse border text-[10px]">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="p-1 border">Sl. No.</th>
+                <th class="p-1 border">Activity Name (Budget)</th>
+                <th class="p-1 border">Intended Amount (Nu.)</th>
+                <th class="p-1 border">Post-Settlement Balance</th>
+                <th class="p-1 border">Justification / Purpose</th>
+              </tr>
+            </thead>
+            <tbody id="sanction-itemized-body"></tbody>
+          </table>
+        </div>
+
+        <div id="sanction-remarks-container" class="border border-blue-200 p-3 bg-blue-50/50 rounded space-y-1">
+          <div class="font-bold text-blue-900">Recorded Supervisory Remarks / Directives:</div>
+          <p id="sanction-remarks-text" class="text-gray-800 italic"></p>
+        </div>
+      </div>
+
+      <!-- DIGITAL SIGNATURE AND SEAL DISPLAY BLOCK -->
+      <div class="grid grid-cols-3 gap-4 pt-6 border-t text-center text-[10px]">
+        <div class="flex flex-col items-center">
+          <p class="font-bold text-gray-700 uppercase mb-1">Initiated by:</p>
+          <div id="print-init-sig-box" class="min-h-[50px] flex items-center justify-center">
+            <span class="text-gray-300 italic text-[9px]">[Digitally Signed]</span>
+          </div>
+          <p class="font-bold text-gray-900 text-xs mt-1" id="sanction-init-name">Initiator Name</p>
+          <p class="text-gray-500" id="sanction-init-role">Role / Sector</p>
+        </div>
+
+        <div class="flex flex-col items-center">
+          <p class="font-bold text-gray-700 uppercase mb-1">Verified by:</p>
+          <div id="print-ver-sig-box" class="min-h-[50px] flex flex-wrap justify-center items-center gap-2">
+            <span class="text-gray-300 italic text-[9px]">[Verified & Signed]</span>
+          </div>
+          <p class="font-bold text-gray-900 text-xs mt-1" id="sanction-ver-names">Participating Officer(s)</p>
+          <p class="text-gray-500" id="sanction-ver-roles">Verification Authority</p>
+        </div>
+
+        <div class="flex flex-col items-center">
+          <p class="font-bold text-gray-700 uppercase mb-1">Approved by:</p>
+          <div id="print-app-sig-box" class="min-h-[50px] flex justify-center items-center gap-2">
+            <span class="text-gray-300 italic text-[9px]">[Approved & Sealed]</span>
+          </div>
+          <p class="font-bold text-gray-900 text-xs mt-1" id="sanction-app-name">Dasho Dzongdag / Dzongrab</p>
+          <p class="text-gray-500" id="sanction-app-role">Apex Approving Executive</p>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-2 border-t text-center text-[10px] text-gray-500 font-sans">
+        www.trashigang.gov.bt | trashigang@trashigang.gov.bt | Official RGoB System
+      </div>
+
+      <div class="flex gap-2 pt-4 no-print border-t">
+        <button onclick="closeSanctionModal()" class="w-1/4 bg-gray-200 text-gray-800 text-xs font-bold py-2 rounded">Close</button>
+        <button onclick="window.print()" class="w-1/4 bg-green-700 hover:bg-green-800 text-white text-xs font-bold py-2 rounded shadow">🖨️ Print</button>
+        <button onclick="exportToPDF('printable-sanction', 'Sanction_Order')" class="w-1/4 bg-red-700 hover:bg-red-800 text-white text-xs font-bold py-2 rounded shadow">📥 Download PDF</button>
+        <button onclick="downloadSanctionDoc()" class="w-1/4 bg-blue-800 hover:bg-blue-900 text-white text-xs font-bold py-2 rounded shadow">📥 Download Word</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // System State & Initial Data
-    let currentUser = { name: "Ugyen Dorji", eid: "E9991", roleType: "DZONGDAG_DZONGRAB", roleTitle: "Dasho Dzongdag", sector: "Executive", signatureImg: "" };
-    let selectedGovernanceScope = "Dzongkhag Administration Scope";
+    const defaultAccounts = [
+      { username: "DZONGDAG", cid: "11101000001", eid: "E9991", name: "Ugyen Dorji", password: "123", roleType: "DZONGDAG_DZONGRAB", role: "Dasho Dzongdag", sector: "Dzongkhag Executive Scope", email: "dzongdag@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      { username: "DZONGRAB", cid: "11101000002", eid: "E9992", name: "Karma Tshering", password: "123", roleType: "DZONGDAG_DZONGRAB", role: "Dzongrab", sector: "Dzongkhag Executive Scope", email: "dzongrab@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      { username: "PA_DZONGDAG", cid: "11101000003", eid: "E9993", name: "Tashi Choden", password: "123", roleType: "PA_OFFICER", role: "PA to Dzongdag", sector: "Dzongkhag Executive Scope", email: "pa.dzongdag@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      { username: "PA_DZONGRAB", cid: "11101000004", eid: "E9994", name: "Sangay Lhamo", password: "123", roleType: "PA_OFFICER", role: "PA to Dzongrab", sector: "Dzongkhag Executive Scope", email: "pa.dzongrab@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      
+      { username: "WAMRONG_DRUNGPA", cid: "11102000001", eid: "E8881", name: "Wamrong Drungpa", password: "123", roleType: "DRUNGPA", role: "Wamrong Drungpa", sector: "Wamrong Drungkhag", email: "wamrong@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      { username: "THRIMSHING_DRUNGPA", cid: "11102000002", eid: "E8882", name: "Thrimshing Drungpa", password: "123", roleType: "DRUNGPA", role: "Thrimshing Drungpa", sector: "Thrimshing Drungkhag", email: "thrimshing@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      { username: "SAKTENG_DRUNGPA", cid: "11102000003", eid: "E8883", name: "Sakteng Drungpa", password: "123", roleType: "DRUNGPA", role: "Sakteng Drungpa", sector: "Sakteng Drungkhag", email: "sakteng@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+
+      { username: "GUP_KANGLUNG", cid: "11103000005", eid: "E7775", name: "Gup Tashi", password: "123", roleType: "GUP", role: "Gup", sector: "Kanglung Gewog", email: "gup.kanglung@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      { username: "HEAD_CULTURE", cid: "11104000001", eid: "E6661", name: "Dorji Namgyal", password: "123", roleType: "SECTOR_HEAD", role: "Cultural Officer", sector: "Culture Sector", email: "head.culture@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      { username: "HEAD_FINANCE", cid: "11104000002", eid: "E6662", name: "Tshering Wangmo", password: "123", roleType: "SECTOR_HEAD", role: "Finance Officer", sector: "Finance Sector", email: "head.finance@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      { username: "HEAD_ENG", cid: "11104000003", eid: "E6663", name: "Kinley Wangdi", password: "123", roleType: "SECTOR_HEAD", role: "Dzongkhag Engineer", sector: "Engineering Sector", email: "head.eng@trashigang.gov.bt", signatureImg: "", sealImg: "" },
+      { username: "11105001133", cid: "11105001133", eid: "E202611", name: "Sonam Tobgay", password: "123", roleType: "SUB_STAFF", role: "Cultural Officer", sector: "Culture Sector", email: "stobgay@trashigang.gov.bt", signatureImg: "", sealImg: "" }
+    ];
+
+    const ALL_TRASHIGANG_SECTORS = [
+      "ALL", "Culture Sector", "Finance Sector", "Engineering Sector", "Planning Sector", 
+      "Agriculture Sector", "Livestock Sector", "Education Sector", "Health Sector", 
+      "Environment Sector", "Land Record Sector", "ICT Sector", "Legal Sector", 
+      "CRCS Sector", "DT Secretariat", "Wamrong Drungkhag", "Thrimshing Drungkhag", 
+      "Sakteng Drungkhag", "Bartsham Gewog", "Bidung Gewog", "Kanglung Gewog", 
+      "Kangpara Gewog", "Khaling Gewog", "Lumang Gewog", "Merak Gewog", 
+      "Phongmey Gewog", "Radhi Gewog", "Samkhar Gewog", "Sakteng Gewog", 
+      "Shongphu Gewog", "Thrimshing Gewog", "Uzorong Gewog", "Yangnyer Gewog"
+    ];
+
+    const defaultMultiTierBudget = {
+      dzongkhag: [
+        { id: "CAP-DZ-01", obc: "51.01", activity: "Bartsham Chorten Structural Restoration", allocated: 500000, sanctioned: 185000, balance: 500000, tier: "Culture Sector", category: "Capital", settledExpenditures: [] },
+        { id: "CUR-DZ-02", obc: "11.01", activity: "Travel allowance for Mask Dancers and Folk Dancers", allocated: 1000000, sanctioned: 0, balance: 1000000, tier: "Culture Sector", category: "Current", settledExpenditures: [] },
+        { id: "CUR-DZ-03", obc: "17.08", activity: "Celebration of Dzongkhag Tshechu", allocated: 1700000, sanctioned: 0, balance: 1700000, tier: "Culture Sector", category: "Current", settledExpenditures: [] },
+        { id: "CAP-DZ-02", obc: "52.01", activity: "Dzong Roof Water-Proofing Maintenance", allocated: 1200000, sanctioned: 0, balance: 1200000, tier: "Engineering Sector", category: "Capital", settledExpenditures: [] },
+        { id: "CUR-DZ-01", obc: "14.01", activity: "Administrative Stationery & Procurement", allocated: 300000, sanctioned: 0, balance: 300000, tier: "Finance Sector", category: "Current", settledExpenditures: [] }
+      ],
+      drungkhag: [
+        { id: "CAP-DR-01", obc: "51.02", activity: "Wamrong Drungkhag Office Extension", allocated: 800000, sanctioned: 150000, balance: 800000, tier: "Wamrong Drungkhag", category: "Capital", settledExpenditures: [] },
+        { id: "CAP-DR-02", obc: "52.02", activity: "Thrimshing Drungkhag Quarter Repair", allocated: 600000, sanctioned: 0, balance: 600000, tier: "Thrimshing Drungkhag", category: "Capital", settledExpenditures: [] }
+      ],
+      gewog: [
+        { id: "CAP-GW-01", obc: "51.03", activity: "Kanglung Gewog Water Supply Expansion", allocated: 450000, sanctioned: 50000, balance: 450000, tier: "Kanglung Gewog", category: "Capital", settledExpenditures: [] }
+      ]
+    };
 
     const defaultNotesheets = [
       {
         id: "#DAT/CULTURE/2026/101",
+        dispatchNo: "DAT/DISPATCH/2026/101",
+        type: "financial",
+        budgetCategory: "capital",
+        budgetId: "CAP-DZ-01",
         subject: "Restoration Work at Bartsham Chorten",
         officer: "Sonam Tobgay (Cultural Officer)",
-        officerUsername: "Sonam Tobgay",
-        initiatorSector: "Cultural Sector",
-        status: "Sanctioned",
+        officerUsername: "11105001133",
+        initiatorSector: "Culture Sector",
+        targetExecutive: "Dasho Dzongdag",
+        isJoint: true,
+        jointSectors: ["Culture Sector", "Finance Sector"],
+        signedSectors: ["Culture Sector", "Finance Sector"],
+        verifications: [
+          { sector: "Culture Sector", verifiedBy: "Dorji Namgyal", role: "Cultural Officer", date: "2026-10-08" },
+          { sector: "Finance Sector", verifiedBy: "Tshering Wangmo", role: "Finance Officer", date: "2026-10-08" }
+        ],
+        routingStage: "Sanctioned",
         budget: 185000,
-        budgetType: "Capital",
-        remarks: "Urgent restoration needed for local heritage site preservation.",
-        remarksText: "Approved as submitted.",
-        approvedBy: "Dasho Dzongdag",
-        date: "2026-10-08"
+        items: [
+          { sl: 1, activityName: "Bartsham Chorten Structural Restoration", intendedAmount: 185000, balanceAfter: 315000, justification: "Urgent masonry & painting repair before Tshechu." }
+        ],
+        details: "Urgent restoration of Bartsham Chorten required due to rain damage before the annual Tshechu.",
+        status: "Sanctioned",
+        date: "2026-10-08",
+        approvedBy: "Ugyen Dorji (Dasho Dzongdag)",
+        remarksText: "Approved as per RGoB Financial Rules."
       }
     ];
 
-    const defaultMultiBudget = [
-      { id: "Dzongkhag Administration Scope", currentAllocated: 1000000, capitalAllocated: 500000, currentSanctioned: 0, capitalSanctioned: 185000 },
-      { id: "Cultural Sector", currentAllocated: 300000, capitalAllocated: 200000, currentSanctioned: 0, capitalSanctioned: 185000 },
-      { id: "Planning Sector", currentAllocated: 400000, capitalAllocated: 150000, currentSanctioned: 0, capitalSanctioned: 0 },
-      { id: "Finance Sector", currentAllocated: 300000, capitalAllocated: 150000, currentSanctioned: 0, capitalSanctioned: 0 }
-    ];
+    const defaultBillSettlements = [];
 
-    function getNotesheets() {
-      const stored = localStorage.getItem("esys_notesheets");
-      return stored ? JSON.parse(stored) : defaultNotesheets;
+    function getUsers() {
+      const stored = localStorage.getItem('tg_esys_users_v16');
+      if (!stored) {
+        localStorage.setItem('tg_esys_users_v16', JSON.stringify(defaultAccounts));
+        return defaultAccounts;
+      }
+      return JSON.parse(stored);
     }
 
-    function saveNotesheets(notes) {
-      localStorage.setItem("esys_notesheets", JSON.stringify(notes));
+    function saveUsers(users) {
+      localStorage.setItem('tg_esys_users_v16', JSON.stringify(users));
+    }
+
+    function getNotesheets() {
+      const stored = localStorage.getItem('tg_esys_notesheets_v16');
+      if (!stored) {
+        localStorage.setItem('tg_esys_notesheets_v16', JSON.stringify(defaultNotesheets));
+        return defaultNotesheets;
+      }
+      return JSON.parse(stored);
+    }
+
+    function saveNotesheets(list) {
+      localStorage.setItem('tg_esys_notesheets_v16', JSON.stringify(list));
+    }
+
+    function getBillSettlements() {
+      const stored = localStorage.getItem('tg_esys_settlements_v16');
+      if (!stored) {
+        localStorage.setItem('tg_esys_settlements_v16', JSON.stringify(defaultBillSettlements));
+        return defaultBillSettlements;
+      }
+      return JSON.parse(stored);
+    }
+
+    function saveBillSettlements(list) {
+      localStorage.setItem('tg_esys_settlements_v16', JSON.stringify(list));
     }
 
     function getMultiBudget() {
-      const stored = localStorage.getItem("esys_multibudget");
-      return stored ? JSON.parse(stored) : defaultMultiBudget;
+      const stored = localStorage.getItem('tg_esys_multibudget_v16');
+      if (!stored) {
+        localStorage.setItem('tg_esys_multibudget_v16', JSON.stringify(defaultMultiTierBudget));
+        return defaultMultiTierBudget;
+      }
+      return JSON.parse(stored);
     }
 
     function saveMultiBudget(mb) {
-      localStorage.setItem("esys_multibudget", JSON.stringify(mb));
+      localStorage.setItem('tg_esys_multibudget_v16', JSON.stringify(mb));
     }
 
-    function getUsers() {
-      const stored = localStorage.getItem("esys_users");
-      return stored ? JSON.parse(stored) : [
-        { name: "Ugyen Dorji", eid: "E9991", roleType: "DZONGDAG_DZONGRAB", sector: "Executive" },
-        { name: "Karma Tshering", eid: "E8882", roleType: "DZONGRAB", sector: "Executive" },
-        { name: "Tashi Namgyal", eid: "E7773", roleType: "PLANNING_OFFICER", sector: "Planning Sector" },
-        { name: "Kinley Penjor", eid: "E6664", roleType: "FINANCE_OFFICER", sector: "Finance Sector" },
-        { name: "Sonam Tobgay", eid: "E5555", roleType: "CULTURAL_OFFICER", sector: "Cultural Sector" }
-      ];
+    function getDispatchCounter() {
+      const stored = localStorage.getItem('tg_esys_dispatch_counter');
+      return stored ? parseInt(stored) : 102;
     }
 
-    function handleRoleSelect(roleType) {
-      const nameInput = document.getElementById('login-name');
-      const eidInput = document.getElementById('login-eid');
-      if (roleType === 'DZONGDAG_DZONGRAB') { nameInput.value = 'Ugyen Dorji'; eidInput.value = 'E9991'; }
-      else if (roleType === 'DZONGRAB') { nameInput.value = 'Karma Tshering'; eidInput.value = 'E8882'; }
-      else if (roleType === 'PLANNING_OFFICER') { nameInput.value = 'Tashi Namgyal'; eidInput.value = 'E7773'; }
-      else if (roleType === 'FINANCE_OFFICER') { nameInput.value = 'Kinley Penjor'; eidInput.value = 'E6664'; }
-      else if (roleType === 'CULTURAL_OFFICER') { nameInput.value = 'Sonam Tobgay'; eidInput.value = 'E5555'; }
+    function setDispatchCounter(val) {
+      localStorage.setItem('tg_esys_dispatch_counter', val.toString());
     }
 
-    function handleLogin(e) {
+    let currentUser = null;
+    let currentTab = 'notesheet';
+    let selectedGovernanceScope = 'dzongkhag';
+    let activeSectorFilter = 'ALL';
+    let isSectorAccordionOpen = false;
+
+    function toggleSectorAccordion() {
+      isSectorAccordionOpen = !isSectorAccordionOpen;
+      const list = document.getElementById('sector-accordion-list');
+      const icon = document.getElementById('sector-accordion-icon');
+      if (list && icon) {
+        if (isSectorAccordionOpen) {
+          list.classList.remove('hidden');
+          icon.innerText = "▲";
+        } else {
+          list.classList.add('hidden');
+          icon.innerText = "▼";
+        }
+      }
+    }
+
+    function showRegisterPanel() {
+      document.getElementById('login-panel').classList.add('hidden');
+      document.getElementById('reset-password-panel').classList.add('hidden');
+      document.getElementById('register-panel').classList.remove('hidden');
+      document.getElementById('login-error-msg').classList.add('hidden');
+    }
+
+    function showLoginPanel() {
+      document.getElementById('register-panel').classList.add('hidden');
+      document.getElementById('reset-password-panel').classList.add('hidden');
+      document.getElementById('login-panel').classList.remove('hidden');
+      document.getElementById('login-error-msg').classList.add('hidden');
+    }
+
+    function showResetPasswordPanel() {
+      document.getElementById('login-panel').classList.add('hidden');
+      document.getElementById('register-panel').classList.add('hidden');
+      document.getElementById('reset-password-panel').classList.remove('hidden');
+      document.getElementById('reset-error-msg').classList.add('hidden');
+    }
+
+    function executePasswordReset(e) {
       e.preventDefault();
-      const roleSelect = document.getElementById('role-select').value;
-      const name = document.getElementById('login-name').value;
-      const eid = document.getElementById('login-eid').value;
+      const identifier = document.getElementById('reset-identifier').value.trim();
+      const eid = document.getElementById('reset-eid').value.trim();
+      const newPassword = document.getElementById('reset-new-password').value.trim();
+      const errBox = document.getElementById('reset-error-msg');
 
-      currentUser.name = name;
-      currentUser.eid = eid;
-      currentUser.roleType = roleSelect;
-      
-      if (roleSelect === "DZONGDAG_DZONGRAB") { currentUser.roleTitle = "Dasho Dzongdag"; currentUser.sector = "Executive"; }
-      else if (roleSelect === "DZONGRAB") { currentUser.roleTitle = "Dasho Dzongrab"; currentUser.sector = "Executive"; }
-      else if (roleSelect === "PLANNING_OFFICER") { currentUser.roleTitle = "Planning Officer"; currentUser.sector = "Planning Sector"; }
-      else if (roleSelect === "FINANCE_OFFICER") { currentUser.roleTitle = "Finance Officer"; currentUser.sector = "Finance Sector"; }
-      else if (roleSelect === "CULTURAL_OFFICER") { currentUser.roleTitle = "Cultural Officer"; currentUser.sector = "Cultural Sector"; }
+      const users = getUsers();
+      const found = users.find(u => 
+        (u.username.toLowerCase() === identifier.toLowerCase() || u.cid === identifier) &&
+        u.eid.toLowerCase() === eid.toLowerCase()
+      );
 
-      document.getElementById('user-display-name').innerText = currentUser.name;
-      document.getElementById('user-emp-id').innerText = 'EID: ' + currentUser.eid;
-      document.getElementById('user-avatar').innerText = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
-      document.getElementById('console-user-role').innerText = 'Role Scope: ' + currentUser.roleTitle;
+      if (!found) {
+        errBox.innerText = "Verification Failed: User Identifier or EID does not match official records.";
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      found.password = newPassword;
+      saveUsers(users);
+
+      alert(`Password updated successfully for ${found.name}! Please login with your new password.`);
+      showLoginPanel();
+      document.getElementById('login-username').value = found.username;
+      document.getElementById('login-password').value = newPassword;
+    }
+
+    function executeRegistration(e) {
+      e.preventDefault();
+      const username = document.getElementById('reg-username').value.trim();
+      const name = document.getElementById('reg-name').value.trim();
+      const cid = document.getElementById('reg-cid').value.trim();
+      const eid = document.getElementById('reg-eid').value.trim();
+      const roleText = document.getElementById('reg-role').value;
+      const sector = document.getElementById('reg-sector').value;
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value.trim();
+      const errBox = document.getElementById('reg-error-msg');
+
+      const users = getUsers();
+
+      if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+        errBox.innerText = `Error: User Name '${username}' is already taken.`;
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      let roleType = "SUB_STAFF";
+      if (roleText === "Dasho Dzongdag" || roleText === "Dzongrab") roleType = "DZONGDAG_DZONGRAB";
+      else if (roleText.includes("PA to")) roleType = "PA_OFFICER";
+      else if (roleText.includes("Drungpa")) roleType = "DRUNGPA";
+      else if (roleText === "Gup") roleType = "GUP";
+      else if (roleText === "Sector Head" || roleText.includes("Officer") || roleText === "Dzongkhag Engineer" || roleText === "DT Secretary") roleType = "SECTOR_HEAD";
+
+      const newUser = { username, name, cid, eid, password, roleType, role: roleText, sector, email, supervisorRole: "", signatureImg: "", sealImg: "" };
+      users.push(newUser);
+      saveUsers(users);
+
+      alert(`Account created successfully for ${name}! Password is set to '${password}'.`);
+      showLoginPanel();
+      document.getElementById('login-username').value = username;
+      document.getElementById('login-password').value = password;
+    }
+
+    function executeLogin(e) {
+      if (e) e.preventDefault();
+      const identifier = document.getElementById('login-username')?.value.trim() || "DZONGDAG";
+      const password = document.getElementById('login-password')?.value.trim() || "123";
+      const errBox = document.getElementById('login-error-msg');
+
+      const users = getUsers();
+      const found = users.find(u => 
+        u.username.toLowerCase() === identifier.toLowerCase() || 
+        u.cid === identifier || 
+        u.eid.toLowerCase() === identifier.toLowerCase()
+      ) || users[0];
+
+      errBox?.classList.add('hidden');
+      currentUser = found;
+      currentUser.avatar = found.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || "OF";
 
       document.getElementById('auth-screen').classList.add('hidden');
       document.getElementById('app-screen').classList.remove('hidden');
-      document.getElementById('page-body').className = 'bg-gray-100 font-sans min-h-screen';
+      renderWorkspace();
+    }
 
+    function loginWithNDI() {
+      const users = getUsers();
+      let found = users.find(u => u.username === "NDI_USER");
+      if (!found) {
+        found = { username: "NDI_USER", cid: "11002233441", eid: "NDI882", name: "Kinley Gyeltshen", password: "ndi", roleType: "SUB_STAFF", role: "IT Officer", sector: "Planning Sector", email: "kgyeltshen@trashigang.gov.bt", signatureImg: "", sealImg: "" };
+        users.push(found);
+        saveUsers(users);
+      }
+      currentUser = found;
+      currentUser.avatar = "KG";
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-screen').classList.remove('hidden');
       renderWorkspace();
     }
 
     function logoutDirectly() {
+      currentUser = null;
       document.getElementById('app-screen').classList.add('hidden');
       document.getElementById('auth-screen').classList.remove('hidden');
-      document.getElementById('page-body').className = 'bg-slate-900 font-sans min-h-screen flex items-center justify-center p-4';
+      if (document.getElementById('login-password')) document.getElementById('login-password').value = "";
     }
 
-    function handleScopeChange(val) {
-      selectedGovernanceScope = val;
+    function switchTab(tab) {
+      currentTab = tab;
+      const navButtons = ['notesheet', 'bill-settlement', 'application', 'submission-report', 'budget', 'summary-report'];
+      navButtons.forEach(t => {
+        const btn = document.getElementById('nav-btn-' + t);
+        if (btn) {
+          btn.className = (t === tab) ? "w-full text-left px-3 py-2 rounded font-bold bg-orange-600 text-white shadow" : "w-full text-left px-3 py-2 rounded font-bold text-gray-700 hover:bg-gray-100";
+        }
+      });
       renderWorkspace();
+    }
+
+    function toggleAdditionalSubmenu() {
+      const menu = document.getElementById('additional-submenu');
+      const icon = document.getElementById('additional-submenu-icon');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        icon.innerText = "▲";
+      } else {
+        menu.classList.add('hidden');
+        icon.innerText = "▼";
+      }
+    }
+
+    function changeGovernanceScope(scope) {
+      selectedGovernanceScope = scope;
+      renderWorkspace();
+    }
+
+    function setNotesheetSectorFilter(sector) {
+      activeSectorFilter = sector;
+      renderWorkspace();
+    }
+
+    function openProfileModal() {
+      document.getElementById('edit-profile-username').value = currentUser.username;
+      document.getElementById('edit-profile-cid').value = currentUser.cid;
+      document.getElementById('edit-profile-eid').value = currentUser.eid;
+      document.getElementById('edit-profile-name').value = currentUser.name;
+      document.getElementById('edit-profile-role').value = currentUser.role;
+      document.getElementById('edit-profile-sector').value = currentUser.sector;
+      document.getElementById('edit-profile-email').value = currentUser.email;
+
+      const drungDiv = document.getElementById('drungkhag-supervisor-profile-field');
+      if (currentUser.sector.includes('Drungkhag')) {
+        drungDiv.classList.remove('hidden');
+        document.getElementById('edit-profile-supervisor').value = currentUser.supervisorRole || "";
+      } else {
+        drungDiv.classList.add('hidden');
+      }
+
+      document.getElementById('profile-modal').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profile-modal').classList.add('hidden');
+    }
+
+    function closeProfileModalOnOutside(e) {
+      if (e.target.id === 'profile-modal') closeProfileModal();
+    }
+
+    function saveProfileUpdates(e) {
+      e.preventDefault();
+      currentUser.cid = document.getElementById('edit-profile-cid').value.trim();
+      currentUser.eid = document.getElementById('edit-profile-eid').value.trim();
+      currentUser.name = document.getElementById('edit-profile-name').value.trim();
+      currentUser.role = document.getElementById('edit-profile-role').value.trim();
+      currentUser.sector = document.getElementById('edit-profile-sector').value.trim();
+      currentUser.email = document.getElementById('edit-profile-email').value.trim();
+
+      const users = getUsers();
+      const idx = users.findIndex(u => u.username === currentUser.username);
+      if (idx !== -1) {
+        users[idx] = currentUser;
+        saveUsers(users);
+      }
+
+      alert("Profile updated successfully!");
+      closeProfileModal();
+      renderHeaderAndSummary();
+    }
+
+    function renderHeaderAndSummary() {
+      document.getElementById('user-display-name').innerText = `${currentUser.name} (${currentUser.role})`;
+      document.getElementById('user-emp-id').innerText = `EID: ${currentUser.eid} | Scope: ${currentUser.sector}`;
+      document.getElementById('user-avatar').innerText = currentUser.avatar;
+
+      const mb = getMultiBudget();
+      let curAlloc = 0, curSanc = 0, curBal = 0;
+      let capAlloc = 0, capSanc = 0, capBal = 0;
+
+      const isSectorHead = currentUser.roleType === "SECTOR_HEAD" || currentUser.roleType === "SUB_STAFF";
+      let listToCalculate = isSectorHead ? (mb.dzongkhag || []).filter(b => b.tier && b.tier.toLowerCase().includes(currentUser.sector.toLowerCase())) : (mb[selectedGovernanceScope] || []);
+
+      listToCalculate.forEach(i => {
+        const category = (i.category || "Current").toLowerCase();
+        if (category === "capital") {
+          capAlloc += i.allocated;
+          capSanc += i.sanctioned;
+          capBal += i.balance;
+        } else {
+          curAlloc += i.allocated;
+          curSanc += i.sanctioned;
+          curBal += i.balance;
+        }
+      });
+
+      document.getElementById('current-allocated').innerText = `Nu. ${curAlloc.toLocaleString()}`;
+      document.getElementById('current-sanctioned').innerText = `Nu. ${curSanc.toLocaleString()}`;
+      document.getElementById('current-balance').innerText = `Nu. ${curBal.toLocaleString()}`;
+
+      document.getElementById('capital-allocated').innerText = `Nu. ${capAlloc.toLocaleString()}`;
+      document.getElementById('capital-sanctioned').innerText = `Nu. ${capSanc.toLocaleString()}`;
+      document.getElementById('capital-balance').innerText = `Nu. ${capBal.toLocaleString()}`;
+
+      document.getElementById('scope-total-allocated').innerText = `Nu. ${(curAlloc + capAlloc).toLocaleString()}`;
+      document.getElementById('scope-total-sanctioned').innerText = `Nu. ${(curSanc + capSanc).toLocaleString()}`;
+      document.getElementById('scope-total-balance').innerText = `Nu. ${(curBal + capBal).toLocaleString()}`;
+    }
+
+    function updateModalCodeLabel(category) {
+      const label = document.getElementById('budget-code-label');
+      if (label) label.innerText = (category === 'Capital') ? "FIC Code *" : "OBC Code *";
+    }
+
+    function openAddBudgetActivityModal(targetScope, targetCategory) {
+      document.getElementById('budget-modal-title').innerText = "➕ Add New Activity & Budget Line";
+      document.getElementById('budget-edit-scope').value = targetScope || selectedGovernanceScope;
+      document.getElementById('budget-edit-id').value = "";
+      document.getElementById('budget-scope-select').value = targetScope || selectedGovernanceScope;
+      document.getElementById('budget-activity-name').value = "";
+      document.getElementById('budget-obc-code').value = "";
+      document.getElementById('budget-allocated-amount').value = "";
+      const catVal = targetCategory || "Current";
+      document.getElementById('budget-category-select').value = catVal;
+      updateModalCodeLabel(catVal);
+      document.getElementById('budget-tier-input').value = currentUser.sector || "";
+      document.getElementById('budget-activity-modal').classList.remove('hidden');
+    }
+
+    function openEditBudgetActivityModal(scopeKey, id) {
+      const mb = getMultiBudget();
+      const item = (mb[scopeKey] || []).find(b => b.id === id);
+      if (!item) return;
+
+      document.getElementById('budget-modal-title').innerText = "✏️ Edit Activity & Budget Details";
+      document.getElementById('budget-edit-scope').value = scopeKey;
+      document.getElementById('budget-edit-id').value = id;
+      document.getElementById('budget-scope-select').value = scopeKey;
+      document.getElementById('budget-activity-name').value = item.activity;
+      document.getElementById('budget-obc-code').value = item.obc || "";
+      document.getElementById('budget-allocated-amount').value = item.allocated;
+      const catVal = item.category || "Current";
+      document.getElementById('budget-category-select').value = catVal;
+      updateModalCodeLabel(catVal);
+      document.getElementById('budget-tier-input').value = item.tier || currentUser.sector || "";
+      document.getElementById('budget-activity-modal').classList.remove('hidden');
+    }
+
+    function closeBudgetActivityModal() {
+      document.getElementById('budget-activity-modal').classList.add('hidden');
+    }
+
+    function saveBudgetActivity(e) {
+      e.preventDefault();
+      const scopeKey = document.getElementById('budget-scope-select').value;
+      const editId = document.getElementById('budget-edit-id').value;
+      const activityName = document.getElementById('budget-activity-name').value.trim();
+      const obcCode = document.getElementById('budget-obc-code').value.trim();
+      const allocated = parseFloat(document.getElementById('budget-allocated-amount').value) || 0;
+      const category = document.getElementById('budget-category-select').value;
+      const tier = document.getElementById('budget-tier-input').value.trim() || currentUser.sector;
+
+      const mb = getMultiBudget();
+      if (!mb[scopeKey]) mb[scopeKey] = [];
+
+      if (editId) {
+        const item = mb[scopeKey].find(b => b.id === editId);
+        if (item) {
+          item.activity = activityName;
+          item.obc = obcCode;
+          item.allocated = allocated;
+          item.category = category;
+          item.tier = tier;
+        }
+      } else {
+        const prefix = category === 'Capital' ? 'CAP' : 'CUR';
+        const newId = `${prefix}-${scopeKey.substring(0, 2).toUpperCase()}-${Math.floor(10 + Math.random() * 90)}`;
+        mb[scopeKey].push({
+          id: newId,
+          obc: obcCode,
+          activity: activityName,
+          allocated: allocated,
+          sanctioned: 0,
+          balance: allocated,
+          tier: tier,
+          category: category,
+          settledExpenditures: []
+        });
+      }
+
+      saveMultiBudget(mb);
+      closeBudgetActivityModal();
+      alert("Budget activity saved successfully!");
+      renderWorkspace();
+    }
+
+    function deleteBudgetActivity(scopeKey, id) {
+      if (!confirm("Are you sure you want to delete this activity budget line?")) return;
+      const mb = getMultiBudget();
+      if (mb[scopeKey]) {
+        mb[scopeKey] = mb[scopeKey].filter(b => b.id !== id);
+        saveMultiBudget(mb);
+        alert("Budget line deleted successfully!");
+        renderWorkspace();
+      }
+    }
+
+    function openUpdateBalanceModal() {
+      const mb = getMultiBudget();
+      const select = document.getElementById('balance-update-activity-select');
+      select.innerHTML = "";
+
+      const isSectorHead = currentUser.roleType === "SECTOR_HEAD" || currentUser.roleType === "SUB_STAFF";
+      let currentScopeActivities = isSectorHead ? (mb.dzongkhag || []).filter(b => b.tier && b.tier.toLowerCase().includes(currentUser.sector.toLowerCase())) : (mb[selectedGovernanceScope] || []);
+
+      currentScopeActivities.forEach(act => {
+        const opt = document.createElement('option');
+        opt.value = act.id;
+        opt.innerText = `[${act.category}] ${act.obc ? '(' + act.obc + ') ' : ''}${act.activity} (Bal: Nu. ${act.balance.toLocaleString()})`;
+        select.appendChild(opt);
+      });
+
+      document.getElementById('update-balance-modal').classList.remove('hidden');
+    }
+
+    function closeUpdateBalanceModal() {
+      document.getElementById('update-balance-modal').classList.add('hidden');
+    }
+
+    function saveMidYearBalance(e) {
+      e.preventDefault();
+      const actId = document.getElementById('balance-update-activity-select').value;
+      const newBal = parseFloat(document.getElementById('balance-update-amount').value) || 0;
+
+      const mb = getMultiBudget();
+      const targetArr = mb[selectedGovernanceScope] || [];
+      const item = targetArr.find(a => a.id === actId);
+      if (item) {
+        item.balance = newBal;
+        saveMultiBudget(mb);
+        alert(`Balance updated to Nu. ${newBal.toLocaleString()}`);
+        closeUpdateBalanceModal();
+        renderWorkspace();
+      }
     }
 
     function renderWorkspace() {
-      const mb = getMultiBudget();
-      const currentScopeBudget = mb.find(b => b.id === selectedGovernanceScope) || mb[0];
+      renderHeaderAndSummary();
+      const ws = document.getElementById('main-portal-workspace');
+      ws.innerHTML = "";
 
-      const curAllocated = currentScopeBudget.currentAllocated;
-      const curSanctioned = currentScopeBudget.currentSanctioned;
-      const curAvailable = curAllocated - curSanctioned;
-
-      const capAllocated = currentScopeBudget.capitalAllocated;
-      const capSanctioned = currentScopeBudget.capitalSanctioned;
-      const capAvailable = capAllocated - capSanctioned;
-
-      const totalAllocated = curAllocated + capAllocated;
-      const totalSanctioned = curSanctioned + capSanctioned;
-      const totalAvailable = curAvailable + capAvailable;
-
-      document.getElementById('stat-total').innerText = 'Nu. ' + totalAllocated.toLocaleString();
-      document.getElementById('stat-sanctioned').innerText = 'Nu. ' + totalSanctioned.toLocaleString();
-      document.getElementById('stat-available').innerText = 'Nu. ' + totalAvailable.toLocaleString();
-
-      document.getElementById('cur-allocated').innerText = 'Nu. ' + curAllocated.toLocaleString();
-      document.getElementById('cur-sanctioned').innerText = 'Sanctioned: Nu. ' + curSanctioned.toLocaleString();
-      document.getElementById('cur-available').innerText = 'Available Bal: Nu. ' + curAvailable.toLocaleString();
-
-      document.getElementById('cap-allocated').innerText = 'Nu. ' + capAllocated.toLocaleString();
-      document.getElementById('cap-sanctioned').innerText = 'Sanctioned: Nu. ' + capSanctioned.toLocaleString();
-      document.getElementById('cap-available').innerText = 'Available Bal: Nu. ' + capAvailable.toLocaleString();
-
-      const notesheets = getNotesheets();
-      const container = document.getElementById('notesheet-list-container');
-      container.innerHTML = '';
-
-      if (notesheets.length === 0) {
-        container.innerHTML = `<div class="text-xs text-gray-500 italic p-4 text-center">No notesheets recorded in current workspace scope.</div>`;
-        return;
+      if (currentTab === 'notesheet') {
+        renderNotesheetTab(ws);
+      } else if (currentTab === 'bill-settlement') {
+        renderBillSettlementTab(ws);
+      } else if (currentTab === 'budget') {
+        renderBudgetTab(ws);
+      } else {
+        ws.innerHTML = `<div class="bg-white p-6 rounded-lg shadow border font-bold text-gray-700">Module: ${currentTab.toUpperCase()} View Active</div>`;
       }
-
-      notesheets.forEach(n => {
-        const item = document.createElement('div');
-        item.className = 'border rounded-xl p-4 bg-gray-50/50 space-y-3';
-        
-        let statusBg = 'bg-amber-100 text-amber-800';
-        if (n.status === 'Sanctioned') statusBg = 'bg-emerald-100 text-emerald-800';
-        if (n.status === 'Rejected') statusBg = 'bg-red-100 text-red-800';
-
-        let actionButtons = '';
-        if (n.status === 'Pending Sanction' && (currentUser.roleType === 'DZONGDAG_DZONGRAB' || currentUser.roleType === 'DZONGRAB')) {
-          actionButtons = `
-            <div class="flex gap-2 pt-2 border-t">
-              <input type="text" id="rem-${n.id.replace(/[^a-zA-Z0-9]/g, '')}" placeholder="Executive Supervisory Remarks..." class="w-full border rounded p-1.5 text-xs">
-              <button onclick="grantSanction('${n.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1 rounded text-xs shrink-0">Grant Sanction</button>
-              <button onclick="rejectNotesheet('${n.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1 rounded text-xs shrink-0">Reject</button>
-            </div>
-          `;
-        }
-
-        item.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-gray-900">${n.id} — ${n.subject}</span>
-            <span class="${statusBg} text-[10px] font-bold px-2 py-0.5 rounded">${n.status}</span>
-          </div>
-          <div class="text-xs text-gray-600">Initiated By: ${n.officer} | Sector: ${n.initiatorSector} | Amount: <strong>Nu. ${(n.budget || 0).toLocaleString()}</strong> (${n.budgetType || 'Capital'})</div>
-          ${n.remarks ? `<div class="text-xs italic text-gray-700 bg-white p-2 rounded border">"${n.remarks}"</div>` : ''}
-          <div class="flex items-center justify-between pt-1">
-            <button onclick="openSanctionModal('${n.id}')" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1.5">
-              📄 View Official Order & Signatures PDF
-            </button>
-          </div>
-          ${actionButtons}
-        `;
-        container.appendChild(item);
-      });
     }
 
-    function openNewNotesheetModal() { document.getElementById('notesheet-modal').classList.remove('hidden'); }
-    function closeNewNotesheetModal() { document.getElementById('notesheet-modal').classList.add('hidden'); }
+    function renderNotesheetTab(ws) {
+      if (["DZONGDAG_DZONGRAB", "PA_OFFICER", "DRUNGPA", "GUP", "SECTOR_HEAD"].includes(currentUser.roleType)) {
+        renderSupervisorConsole(ws);
+      } else {
+        renderInitiatorForm(ws);
+      }
+    }
 
-    function handleCreateNotesheet(e) {
-      e.preventDefault();
-      const subject = document.getElementById('ns-subject').value;
-      const budgetType = document.getElementById('ns-budget-type').value;
-      const budget = parseFloat(document.getElementById('ns-budget').value) || 0;
-      const remarks = document.getElementById('ns-remarks').value;
-
+    function renderSupervisorConsole(ws) {
       const notesheets = getNotesheets();
-      const newId = "#DAT/" + (currentUser.sector.split(' ')[0].toUpperCase()) + "/2026/" + (100 + notesheets.length + 1);
 
-      const newSheet = {
-        id: newId,
-        subject: subject,
-        officer: `${currentUser.name} (${currentUser.roleTitle})`,
-        officerUsername: currentUser.name,
+      let visibleNotes = notesheets.filter(n => {
+        if (["DZONGDAG_DZONGRAB", "PA_OFFICER"].includes(currentUser.roleType)) {
+          if (n.targetExecutive === "Don't Share") return false;
+          if (currentUser.role === "Dasho Dzongdag" && n.targetExecutive === "Dzongrab") return false;
+          if (currentUser.role === "Dzongrab" && n.targetExecutive === "Dasho Dzongdag") return false;
+          return true;
+        } else if (currentUser.roleType === "DRUNGPA") {
+          return n.initiatorSector === currentUser.sector || (n.targetExecutive && n.targetExecutive.includes(currentUser.role));
+        } else if (currentUser.roleType === "GUP") {
+          return n.initiatorSector === currentUser.sector;
+        } else {
+          return (n.jointSectors || []).some(s => s.toLowerCase().includes(currentUser.sector.toLowerCase())) || n.initiatorSector === currentUser.sector;
+        }
+      });
+
+      if (activeSectorFilter !== 'ALL') {
+        visibleNotes = visibleNotes.filter(n => n.initiatorSector.toLowerCase().includes(activeSectorFilter.toLowerCase()));
+      }
+
+      let titleText = "SUPERVISORY REVIEW & SANCTION CONSOLE";
+      if (currentUser.roleType === "SECTOR_HEAD") titleText = "OFFICER VERIFICATION & SIGNING CONSOLE";
+      if (currentUser.roleType === "PA_OFFICER") titleText = "EXECUTIVE PA REVIEW CONSOLE";
+
+      let html = `
+        <div class="bg-white rounded-lg shadow border p-6 space-y-6">
+          <div class="flex items-center justify-between border-b pb-4">
+            <div>
+              <h2 class="text-base font-extrabold text-gray-800 uppercase flex items-center gap-2">
+                ⚖️ ${titleText} (${currentUser.name})
+              </h2>
+              <p class="text-xs text-gray-500 italic">Sanctioning updates the <strong>Sanctioned Amount</strong> only. Available balance remains intact until Bill Settlement.</p>
+            </div>
+            <span class="bg-amber-100 text-amber-900 font-bold text-xs px-3 py-1 rounded-full border border-amber-300">
+              Role: ${currentUser.role}
+            </span>
+          </div>
+
+          <div class="bg-slate-50 rounded-lg border overflow-hidden shadow-sm">
+            <button type="button" onclick="toggleSectorAccordion()" class="w-full p-3 bg-white hover:bg-slate-100 transition flex items-center justify-between text-xs font-bold text-gray-800 border-b cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span>📥 NOTESHEETS RECEIVED FROM SECTORS / PORTALS:</span>
+                <span class="px-2 py-0.5 rounded text-[10px] bg-orange-600 text-white font-extrabold">Active Filter: ${activeSectorFilter === 'ALL' ? '🌐 All Sectors' : activeSectorFilter}</span>
+              </div>
+              <span id="sector-accordion-icon" class="text-gray-500 font-extrabold">${isSectorAccordionOpen ? '▲' : '▼'}</span>
+            </button>
+
+            <div id="sector-accordion-list" class="${isSectorAccordionOpen ? '' : 'hidden'} p-2 max-h-64 overflow-y-auto space-y-1 bg-white border-t">
+              ${ALL_TRASHIGANG_SECTORS.map(sec => `
+                <button onclick="setNotesheetSectorFilter('${sec}')" class="w-full text-left px-3 py-1.5 rounded text-xs font-semibold border transition flex items-center justify-between ${activeSectorFilter === sec ? 'bg-orange-600 text-white border-orange-700 shadow-sm' : 'bg-gray-50 text-gray-700 hover:bg-orange-50 hover:text-orange-800 border-gray-200'}">
+                  <span>${sec === 'ALL' ? '🌐 All Sectors / Portals' : sec}</span>
+                  ${activeSectorFilter === sec ? '<span class="text-[10px] font-bold uppercase tracking-wider">Selected ✓</span>' : ''}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-4">
+      `;
+
+      if (visibleNotes.length === 0) {
+        html += `<p class="text-xs italic text-gray-500 py-6 text-center">No active notesheets received for filter (${activeSectorFilter}).</p>`;
+      } else {
+        visibleNotes.forEach(n => {
+          const canSanction = ["DZONGDAG_DZONGRAB", "DRUNGPA", "GUP"].includes(currentUser.roleType) && n.status === "Pending Sanction";
+          const canVerify = currentUser.roleType === "SECTOR_HEAD" && !(n.signedSectors || []).some(s => s.toLowerCase().includes(currentUser.sector.toLowerCase()));
+
+          html += `
+            <div class="border rounded-lg p-5 space-y-4 ${n.status === 'Sanctioned' ? 'bg-green-50/40 border-green-200' : (n.status === 'Rejected' ? 'bg-red-50/40 border-red-200' : 'bg-gray-50 border-gray-200')}">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="text-sm font-bold text-gray-900">${n.id} — ${n.subject}</h3>
+                  <p class="text-[11px] text-gray-500 font-semibold">Initiated By: ${n.officer} (${n.initiatorSector}) | Date: ${n.date}</p>
+                  <p class="text-[11px] text-blue-900 font-bold mt-0.5">🎯 Submitted To: ${n.targetExecutive || 'Direct Route'}</p>
+                </div>
+                <div class="text-right">
+                  <span class="px-2.5 py-1 rounded text-[11px] font-bold ${n.status === 'Sanctioned' ? 'bg-green-600 text-white' : (n.status === 'Rejected' ? 'bg-red-600 text-white' : 'bg-amber-500 text-white')}">
+                    Status: ${n.status}
+                  </span>
+                  <p class="text-xs font-extrabold text-orange-700 mt-1">Sanction Request: Nu. ${n.budget.toLocaleString()}</p>
+                </div>
+              </div>
+
+              ${n.type === 'financial' && n.items ? `
+                <div class="bg-white p-3 rounded border space-y-1">
+                  <strong class="text-gray-700 text-[11px] uppercase">Financial Activity Breakdown:</strong>
+                  <table class="w-full text-left border-collapse border text-xs">
+                    <thead>
+                      <tr class="bg-gray-100">
+                        <th class="p-1.5 border">Sl. No.</th>
+                        <th class="p-1.5 border">Activity Name</th>
+                        <th class="p-1.5 border">Intended Amount</th>
+                        <th class="p-1.5 border">Justification</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${n.items.map(i => `
+                        <tr>
+                          <td class="p-1.5 border">${i.sl}</td>
+                          <td class="p-1.5 border font-semibold">${i.activityName}</td>
+                          <td class="p-1.5 border font-bold text-blue-900">Nu. ${i.intendedAmount.toLocaleString()}</td>
+                          <td class="p-1.5 border">${i.justification}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              ` : `
+                <div class="bg-white p-3 rounded border text-xs text-gray-700">
+                  <strong>Proposal Details:</strong>
+                  <p class="mt-1 leading-relaxed">${n.details || 'N/A'}</p>
+                </div>
+              `}
+
+              ${canVerify ? `
+                <div class="bg-amber-50 border border-amber-300 p-3 rounded space-y-2">
+                  <label class="block text-xs font-bold text-amber-900">Officer Verification Remarks:</label>
+                  <input type="text" id="ver-remark-${n.id.replace(/[^a-zA-Z0-9]/g, '')}" placeholder="Verified technical details" class="w-full border rounded px-2.5 py-1.5 text-xs bg-white">
+                  <button onclick="executeSectorVerification('${n.id}')" class="bg-blue-800 hover:bg-blue-900 text-white font-bold px-4 py-1.5 rounded text-xs shadow">
+                    ✍️ Verify & Sign Notesheet
+                  </button>
+                </div>
+              ` : ''}
+
+              ${canSanction ? `
+                <div class="bg-blue-50 border border-blue-200 p-3 rounded space-y-2">
+                  <label class="block text-xs font-bold text-blue-900">Executive Directive / Supervisory Remarks:</label>
+                  <input type="text" id="app-remark-${n.id.replace(/[^a-zA-Z0-9]/g, '')}" placeholder="Approved / Rejected as per RGoB rules..." class="w-full border rounded px-2.5 py-1.5 text-xs bg-white">
+                  <div class="flex gap-2 pt-1">
+                    <button onclick="executeExecutiveSanction('${n.id}')" class="bg-green-700 hover:bg-green-800 text-white font-bold px-4 py-1.5 rounded text-xs shadow flex items-center gap-1">
+                      ⚖️ Grant Executive Sanction
+                    </button>
+                    <button onclick="executeExecutiveReject('${n.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-1.5 rounded text-xs shadow flex items-center gap-1">
+                      ❌ Reject Notesheet
+                    </button>
+                  </div>
+                </div>
+              ` : ''}
+
+              <div class="pt-1 flex justify-end">
+                <button onclick="openSanctionModal('${n.id}')" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3 py-1.5 rounded text-xs shadow flex items-center gap-1">
+                  📄 View Official Order & Signatures PDF
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      html += `</div></div>`;
+      ws.innerHTML = html;
+    }
+
+    function renderInitiatorForm(ws) {
+      const mb = getMultiBudget();
+      const activeActivities = mb[selectedGovernanceScope] || [];
+
+      ws.innerHTML = `
+        <div class="bg-white rounded-lg shadow border p-6 space-y-6">
+          <div class="flex items-center justify-between border-b pb-4">
+            <div>
+              <h2 class="text-base font-extrabold text-gray-800 uppercase">📝 Create New Official Notesheet</h2>
+              <p class="text-xs text-gray-500 italic">Sanctioning a notesheet reserves the budget without deducting available balance.</p>
+            </div>
+            <span class="bg-orange-100 text-orange-800 font-bold text-xs px-3 py-1 rounded-full border border-orange-300">
+              Scope: ${currentUser.sector}
+            </span>
+          </div>
+
+          <form onsubmit="submitInitiatorNotesheet(event)" class="space-y-4 text-xs">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block font-bold text-gray-700 mb-1">NOTESHEET CATEGORY *</label>
+                <select id="init-type" class="w-full border rounded px-3 py-2 font-bold text-gray-800">
+                  <option value="financial">Financial Notesheet (Sanction Request)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block font-bold text-gray-700 mb-1">SUBMIT TO EXECUTIVE *</label>
+                <select id="init-target-exec" class="w-full border rounded px-3 py-2 font-bold text-blue-900 bg-blue-50">
+                  <option value="Dasho Dzongdag">Submit to Dasho Dzongdag</option>
+                  <option value="Dzongrab">Submit to Dzongrab</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-gray-700 mb-1">SUBJECT / PROPOSAL TITLE *</label>
+              <input type="text" id="init-subject" required placeholder="e.g. Structural Restoration Work" class="w-full border rounded px-3 py-2 font-bold text-gray-800">
+            </div>
+
+            <div class="bg-slate-50 border rounded-lg p-4 space-y-3">
+              <label class="font-bold text-gray-800 block text-xs uppercase">Select Budget Line & Proposed Amount:</label>
+              
+              <div class="grid grid-cols-3 gap-3">
+                <div class="col-span-2">
+                  <select id="init-act-select" class="w-full border rounded p-2 font-semibold text-gray-800">
+                    ${activeActivities.map(a => `<option value="${a.id}">[${a.category}]${a.obc ? '(' + a.obc + ') ' : ''}${a.activity} (Bal: Nu.${a.balance.toLocaleString()})</option>`).join('')}
+                  </select>
+                </div>
+                <div>
+                  <input type="number" id="init-intended-amount" required placeholder="Amount (Nu.)" class="w-full border rounded p-2 font-bold text-gray-800">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2.5 rounded-lg shadow text-xs uppercase transition">
+              🚀 Submit Sanction Request
+            </button>
+          </form>
+        </div>
+      `;
+    }
+
+    function submitInitiatorNotesheet(e) {
+      e.preventDefault();
+      const subject = document.getElementById('init-subject').value.trim();
+      const budgetId = document.getElementById('init-act-select').value;
+      const amount = parseFloat(document.getElementById('init-intended-amount').value) || 0;
+
+      const id = "#DAT/" + currentUser.sector.replace(/\s+/g, '').toUpperCase() + "/2026/" + Math.floor(100 + Math.random() * 900);
+
+      const newNote = {
+        id,
+        dispatchNo: "",
+        type: "financial",
+        budgetId,
+        subject,
+        officer: `${currentUser.name} (${currentUser.role})`,
+        officerUsername: currentUser.username,
         initiatorSector: currentUser.sector,
+        targetExecutive: "Dasho Dzongdag",
+        signedSectors: [currentUser.sector],
+        jointSectors: [currentUser.sector],
+        verifications: [
+          { sector: currentUser.sector, verifiedBy: currentUser.name, role: currentUser.role, date: new Date().toISOString().split('T')[0] }
+        ],
+        budget: amount,
+        items: [{ sl: 1, activityName: subject, intendedAmount: amount, justification: "Approved Activity Request" }],
         status: "Pending Sanction",
-        budget: budget,
-        budgetType: budgetType,
-        remarks: remarks,
-        remarksText: "",
-        approvedBy: "",
         date: new Date().toISOString().split('T')[0]
       };
 
-      notesheets.unshift(newSheet);
-      saveNotesheets(notesheets);
-      closeNewNotesheetModal();
+      const list = getNotesheets();
+      list.unshift(newNote);
+      saveNotesheets(list);
+
+      alert(`Notesheet ${id} submitted successfully!`);
       renderWorkspace();
-      alert("Notesheet Initiated Successfully!");
     }
 
-    function grantSanction(id) {
-      const notesheets = getNotesheets();
-      const note = notesheets.find(n => n.id === id);
-      if (note) {
-        const remInput = document.getElementById('rem-' + id.replace(/[^a-zA-Z0-9]/g, ''));
-        note.status = "Sanctioned";
-        note.remarksText = remInput ? remInput.value || "Approved as submitted." : "Approved as submitted.";
-        note.approvedBy = currentUser.name;
+    function executeSectorVerification(id) {
+      const list = getNotesheets();
+      const note = list.find(n => n.id === id);
+      if (!note) return;
 
+      const cleanId = id.replace(/[^a-zA-Z0-9]/g, '');
+      const remarkInput = document.getElementById('ver-remark-' + cleanId);
+      const remark = remarkInput ? remarkInput.value.trim() : "Verified";
+
+      if (!note.signedSectors) note.signedSectors = [];
+      if (!note.signedSectors.includes(currentUser.sector)) {
+        note.signedSectors.push(currentUser.sector);
+        if (!note.verifications) note.verifications = [];
+        note.verifications.push({ sector: currentUser.sector, verifiedBy: currentUser.name, role: currentUser.role, date: new Date().toISOString().split('T')[0] });
+      }
+
+      saveNotesheets(list);
+      alert(`Verified and signed '${id}'.`);
+      renderWorkspace();
+    }
+
+    function executeExecutiveSanction(id) {
+      const list = getNotesheets();
+      const note = list.find(n => n.id === id);
+      if (!note) return;
+
+      const cleanId = id.replace(/[^a-zA-Z0-9]/g, '');
+      const remarkInput = document.getElementById('app-remark-' + cleanId);
+      const remark = remarkInput ? remarkInput.value.trim() : "Approved as submitted";
+
+      const counter = getDispatchCounter();
+      note.dispatchNo = `DAT/DISPATCH/2026/${counter}`;
+      setDispatchCounter(counter + 1);
+
+      note.status = "Sanctioned";
+      note.approvedBy = `${currentUser.name} (${currentUser.role})`;
+      note.remarksText = remark;
+
+      if (note.budgetId) {
         const mb = getMultiBudget();
-        mb.forEach(b => {
-          if (b.id === "Dzongkhag Administration Scope" || b.id === note.initiatorSector) {
-            if (note.budgetType === "Current") b.currentSanctioned += note.budget;
-            else b.capitalSanctioned += note.budget;
-          }
+        const item = (mb[selectedGovernanceScope] || []).find(b => b.id === note.budgetId);
+        if (item) {
+          item.sanctioned += note.budget;
+          saveMultiBudget(mb);
+        }
+      }
+
+      saveNotesheets(list);
+      alert(`Sanction Granted! Dispatch Order #${note.dispatchNo} generated.`);
+      renderWorkspace();
+    }
+
+    function executeExecutiveReject(id) {
+      const list = getNotesheets();
+      const note = list.find(n => n.id === id);
+      if (!note) return;
+
+      const cleanId = id.replace(/[^a-zA-Z0-9]/g, '');
+      const remarkInput = document.getElementById('app-remark-' + cleanId);
+      const remark = remarkInput ? remarkInput.value.trim() : "Rejected by Executive";
+
+      note.status = "Rejected";
+      note.approvedBy = `${currentUser.name} (${currentUser.role})`;
+      note.remarksText = remark;
+
+      saveNotesheets(list);
+      alert(`Notesheet ${id} marked as Rejected.`);
+      renderWorkspace();
+    }
+
+    function renderBillSettlementTab(ws) {
+      const notesheets = getNotesheets().filter(n => n.status === "Sanctioned");
+      const settlements = getBillSettlements();
+
+      ws.innerHTML = `
+        <div class="bg-white rounded-lg shadow border p-6 space-y-6">
+          <div class="flex justify-between items-center border-b pb-3">
+            <div>
+              <h2 class="text-base font-extrabold text-gray-800 uppercase">🧾 BILL SETTLEMENT NOTESHEET MODULE</h2>
+              <p class="text-xs text-gray-500 italic">Submit actual bills against approved/sanctioned notesheets to deduct available budget.</p>
+            </div>
+            <span class="bg-emerald-100 text-emerald-800 font-bold text-xs px-3 py-1 rounded-full border border-emerald-300">
+              Scope: ${currentUser.sector}
+            </span>
+          </div>
+
+          <form onsubmit="submitBillSettlement(event)" class="bg-slate-50 border p-4 rounded-lg space-y-4 text-xs">
+            <h3 class="font-bold text-gray-800 uppercase border-b pb-2">Submit New Bill Settlement (Deducts Available Balance)</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-gray-700 mb-1">SELECT SANCTIONED NOTESHEET *</label>
+                <select id="settle-notesheet-id" onchange="autoFillSanctionDetails(this.value)" required class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+                  <option value="">-- Choose Approved Sanctioned Notesheet --</option>
+                  ${notesheets.map(n => `<option value="${n.id}">${n.id} — ${n.subject} (Sanctioned: Nu.${n.budget.toLocaleString()})</option>`).join('')}
+                </select>
+              </div>
+
+              <div>
+                <label class="block font-bold text-gray-700 mb-1">SANCTIONED AMOUNT REFERENCE</label>
+                <input type="text" id="settle-sanctioned-ref" readonly placeholder="Nu. 0" class="w-full border bg-gray-100 rounded px-2.5 py-1.5 font-bold text-blue-900">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-gray-700 mb-1">FINAL ACTUAL SETTLED BILL AMOUNT (Nu.) *</label>
+                <input type="number" id="settle-actual-amount" required placeholder="e.g. 185000" class="w-full border rounded px-2.5 py-1.5 font-bold text-emerald-800 outline-none focus:ring-1 focus:ring-orange-500">
+              </div>
+
+              <div>
+                <label class="block font-bold text-gray-700 mb-1">BILL / INVOICE VOUCHER NO. *</label>
+                <input type="text" id="settle-voucher-no" required placeholder="e.g. INV-2026-991" class="w-full border rounded px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-gray-700 mb-1">REMARKS / EXPENDITURE JUSTIFICATION</label>
+              <input type="text" id="settle-remarks" required placeholder="e.g. Final bill settled with Tax Invoice attached." class="w-full border rounded px-2.5 py-1.5 text-gray-800">
+            </div>
+
+            <button type="submit" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition">
+              💳 Submit & Deduct Budget Balance
+            </button>
+          </form>
+
+          <div class="space-y-3 pt-2">
+            <h3 class="font-bold text-gray-800 uppercase text-xs">Settled Expenditure History</h3>
+            <div class="space-y-2">
+              ${settlements.length === 0 ? '<p class="text-xs italic text-gray-400 py-3">No settled bills submitted yet.</p>' : 
+                settlements.map(s => `
+                  <div class="border rounded p-3 bg-white flex justify-between items-center text-xs">
+                    <div>
+                      <span class="font-bold text-emerald-800">${s.id}</span> (Ref:${s.notesheetId})
+                      <p class="text-gray-600 font-semibold mt-0.5">Voucher: ${s.voucherNo} \vert{}${s.remarks}</p>
+                    </div>
+                    <div class="text-right">
+                      <span class="font-extrabold text-red-700 text-sm">- Nu. ${s.amount.toLocaleString()}</span>
+                      <p class="text-[10px] text-gray-400">Deducted on ${s.date}</p>
+                    </div>
+                  </div>
+                `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function autoFillSanctionDetails(notesheetId) {
+      const notes = getNotesheets();
+      const found = notes.find(n => n.id === notesheetId);
+      if (found) {
+        document.getElementById('settle-sanctioned-ref').value = `Nu. ${found.budget.toLocaleString()}`;
+        document.getElementById('settle-actual-amount').value = found.budget;
+      }
+    }
+
+    function submitBillSettlement(e) {
+      e.preventDefault();
+      const notesheetId = document.getElementById('settle-notesheet-id').value;
+      const actualAmount = parseFloat(document.getElementById('settle-actual-amount').value) || 0;
+      const voucherNo = document.getElementById('settle-voucher-no').value.trim();
+      const remarks = document.getElementById('settle-remarks').value.trim();
+
+      const notes = getNotesheets();
+      const note = notes.find(n => n.id === notesheetId);
+      if (!note) return;
+
+      const mb = getMultiBudget();
+      const scopeList = mb[selectedGovernanceScope] || [];
+      const budgetItem = scopeList.find(b => b.id === note.budgetId);
+
+      if (budgetItem) {
+        // DEDUCT AVAILABLE BALANCE HERE UPON BILL SETTLEMENT
+        budgetItem.balance -= actualAmount;
+        if (!budgetItem.settledExpenditures) budgetItem.settledExpenditures = [];
+        budgetItem.settledExpenditures.push({
+          refId: notesheetId,
+          amount: actualAmount,
+          activity: note.subject,
+          date: new Date().toISOString().split('T')[0],
+          sector: note.initiatorSector
         });
         saveMultiBudget(mb);
-        saveNotesheets(notesheets);
-        alert("Executive Sanction Granted!");
-        renderWorkspace();
       }
+
+      const settlements = getBillSettlements();
+      const settlementRecord = {
+        id: "SETTLE-" + Math.floor(100 + Math.random() * 900),
+        notesheetId,
+        amount: actualAmount,
+        voucherNo,
+        remarks,
+        date: new Date().toISOString().split('T')[0]
+      };
+      settlements.unshift(settlementRecord);
+      saveBillSettlements(settlements);
+
+      alert(`Bill Settlement Submitted successfully! Nu. ${actualAmount.toLocaleString()} has been deducted from the available balance.`);
+      renderWorkspace();
     }
 
-    function rejectNotesheet(id) {
-      const notesheets = getNotesheets();
-      const note = notesheets.find(n => n.id === id);
-      if (note) {
-        note.status = "Rejected";
-        saveNotesheets(notesheets);
-        alert("Notesheet Rejected.");
-        renderWorkspace();
-      }
+    function renderBudgetTab(ws) {
+      const mb = getMultiBudget();
+      const isSectorHead = currentUser.roleType === "SECTOR_HEAD" || currentUser.roleType === "SUB_STAFF";
+      const sectorData = isSectorHead ? (mb.dzongkhag || []).filter(b => b.tier && b.tier.toLowerCase().includes(currentUser.sector.toLowerCase())) : (mb[selectedGovernanceScope] || []);
+      
+      const currentData = sectorData.filter(b => (b.category || "Current").toLowerCase() === "current");
+      const capitalData = sectorData.filter(b => (b.category || "").toLowerCase() === "capital");
+
+      ws.innerHTML = `
+        <div class="bg-white rounded-lg shadow border p-6 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between border-b pb-3 gap-3">
+            <div>
+              <h2 class="text-base font-bold text-gray-800 uppercase">💰 BUDGET & EXPENDITURE MATRIX</h2>
+              <p class="text-xs text-gray-500 italic">Manage budget activities, track sanctioned funds, and monitor settled bill deductions.</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="openAddBudgetActivityModal('dzongkhag')" class="bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold px-3 py-1.5 rounded shadow flex items-center gap-1">
+                ➕ Add New Budget Line
+              </button>
+              <button onclick="openUpdateBalanceModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded shadow">
+                ⚙️ Update Mid-Year Balance
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            ${renderBudgetCategoryTable("dzongkhag", "Current", "Current Budget", currentData)}
+            ${renderBudgetCategoryTable("dzongkhag", "Capital", "Capital Budget", capitalData)}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderBudgetCategoryTable(scopeKey, category, title, data) {
+      const codeHeader = (category === 'Capital') ? 'FIC' : 'OBC';
+
+      return `
+        <div class="border rounded-lg p-4 bg-gray-50 space-y-3">
+          <div class="flex justify-between items-center border-b pb-2">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${category === 'Capital' ? 'bg-purple-700 text-white' : 'bg-blue-700 text-white'}">${category}</span>
+              <h3 class="text-xs font-extrabold text-gray-800 uppercase">${title}</h3>
+            </div>
+            <button onclick="openAddBudgetActivityModal('${scopeKey}', '${category}')" class="bg-blue-800 hover:bg-blue-900 text-white text-[10px] font-bold px-2 py-1 rounded shadow">
+              ➕ Add ${category} Activity
+            </button>
+          </div>
+
+          <table class="w-full text-left border-collapse border bg-white text-xs">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="p-2 border">${codeHeader}</th>
+                <th class="p-2 border">Activity Description</th>
+                <th class="p-2 border">Allocated (Nu.)</th>
+                <th class="p-2 border">Sanctioned (Nu.)</th>
+                <th class="p-2 border">Available Balance (Nu.)</th>
+                <th class="p-2 border">Settled Bills Deductions</th>
+                <th class="p-2 border text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.length === 0 ? `<tr><td colspan="7" class="p-3 text-center text-gray-400 italic">No ${category} budget lines configured.</td></tr>` : 
+                data.map(b => `
+                <tr>
+                  <td class="p-2 border font-bold text-slate-700">${b.obc || '-'}</td>
+                  <td class="p-2 border font-semibold text-gray-800">${b.activity}</td>
+                  <td class="p-2 border text-blue-900 font-bold">Nu. ${b.allocated.toLocaleString()}</td>
+                  <td class="p-2 border text-amber-700 font-bold">Nu. ${b.sanctioned.toLocaleString()}</td>
+                  <td class="p-2 border text-emerald-800 font-extrabold">Nu. ${b.balance.toLocaleString()}</td>
+                  <td class="p-2 border text-[11px]">
+                    ${(b.settledExpenditures && b.settledExpenditures.length > 0) ? 
+                      b.settledExpenditures.map(s => `<div class="font-bold text-red-700">• Settled: Nu. ${s.amount.toLocaleString()}</div>`).join('') :
+                      '<span class="text-gray-400 italic">No bill settlement deducted yet</span>'}
+                  </td>
+                  <td class="p-2 border text-center">
+                    <div class="flex items-center justify-center gap-1">
+                      <button onclick="openEditBudgetActivityModal('${scopeKey}', '${b.id}')" class="bg-slate-700 hover:bg-slate-800 text-white font-bold text-[10px] px-2 py-1 rounded shadow">
+                        ✏️ Edit
+                      </button>
+                      <button onclick="deleteBudgetActivity('${scopeKey}', '${b.id}')" class="bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] px-2 py-1 rounded shadow">
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
     }
 
     function openSanctionModal(id) {
-      const notesheets = getNotesheets();
-      const note = notesheets.find(n => n.id === id) || notesheets[0];
-      
-      document.getElementById('sanction-ref').innerText = note.id;
-      document.getElementById('sanction-date').innerText = note.date || "2026-10-08";
-      document.getElementById('sanction-subject').innerText = note.subject;
-      document.getElementById('sanction-budget').innerText = "Nu. " + (note.budget || 0).toLocaleString();
-      document.getElementById('sanction-remarks-text').innerText = note.remarksText || note.remarks || "Approved as submitted.";
+      const list = getNotesheets();
+      const note = list.find(n => n.id === id);
+      if (!note) return;
 
-      document.getElementById('print-initiator-name').innerText = note.officerUsername || note.officer || "Sonam Tobgay";
-      document.getElementById('print-initiator-role').innerText = note.initiatorSector || "Initiating Officer";
-      document.getElementById('print-approver-name').innerText = note.approvedBy || "Dasho Dzongdag";
+      document.getElementById('sanction-ref').innerText = note.id;
+      if (note.dispatchNo) {
+        document.getElementById('sanction-dispatch').innerText = note.dispatchNo;
+        document.getElementById('sanction-dispatch-container').classList.remove('hidden');
+      } else {
+        document.getElementById('sanction-dispatch-container').classList.add('hidden');
+      }
+
+      document.getElementById('sanction-date').innerText = "Date: " + note.date;
+      document.getElementById('sanction-subject').innerText = note.subject;
+      document.getElementById('sanction-type-badge').innerText = (note.type || 'financial').toUpperCase() + " NOTESHEET";
+      document.getElementById('sanction-budget').innerText = "Nu. " + (note.budget || 0).toLocaleString();
+      document.getElementById('sanction-remarks-text').innerText = note.remarksText || "Approved as submitted.";
+
+      const body = document.getElementById('sanction-itemized-body');
+      body.innerHTML = (note.items || []).map(item => `
+        <tr>
+          <td class="p-1 border font-bold text-center">${item.sl || 1}</td>
+          <td class="p-1 border">${item.activityName || note.subject}</td>
+          <td class="p-1 border font-bold text-blue-900">Nu. ${(item.intendedAmount || note.budget).toLocaleString()}</td>
+          <td class="p-1 border font-bold text-emerald-800">Nu. ${(item.balanceAfter || 0).toLocaleString()}</td>
+          <td class="p-1 border">${item.justification || 'Official Request'}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('sanction-init-name').innerText = note.officer;
+      document.getElementById('sanction-init-role').innerText = note.initiatorSector;
+
+      const verNames = (note.verifications || []).map(v => `${v.verifiedBy} (${v.role})`).join(', ') || "Verified";
+      document.getElementById('sanction-ver-names').innerText = verNames;
+
+      document.getElementById('sanction-app-name').innerText = note.approvedBy || "Awaiting Executive Action";
 
       document.getElementById('sanction-modal').classList.remove('hidden');
     }
 
-    function closeSanctionModal() { document.getElementById('sanction-modal').classList.add('hidden'); }
-    function openProfileModal() { document.getElementById('profile-modal').classList.remove('hidden'); }
-    function closeProfileModal() { document.getElementById('profile-modal').classList.add('hidden'); }
-
-    function handleSaveProfile(e) {
-      e.preventDefault();
-      currentUser.name = document.getElementById('prof-name').value;
-      currentUser.eid = document.getElementById('prof-eid').value;
-      currentUser.signatureImg = document.getElementById('prof-signature-url').value;
-
-      document.getElementById('user-display-name').innerText = currentUser.name;
-      document.getElementById('user-emp-id').innerText = 'EID: ' + currentUser.eid;
-      closeProfileModal();
-      alert("Profile and Authentication Details Updated!");
+    function closeSanctionModal() {
+      document.getElementById('sanction-modal').classList.add('hidden');
     }
 
-    function downloadPDF() {
-      const element = document.getElementById('printable-sanction');
+    function exportToPDF(elementId, filenamePrefix) {
+      const element = document.getElementById(elementId);
       const opt = {
-        margin: 0.5,
-        filename: 'sanction-order.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        margin:       0.5,
+        filename:     `${filenamePrefix}_${Date.now()}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
       };
       html2pdf().set(opt).from(element).save();
     }
+
+    function downloadSanctionDoc() {
+      const content = document.getElementById('printable-sanction').innerHTML;
+      const htmlHeader = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Sanction Order</title><style>body { font-family: Arial, sans-serif; margin: 1in; } .no-print { display: none; }</style></head><body>";
+      const htmlFooter = "</body></html>";
+      
+      const fullHtml = htmlHeader + content + htmlFooter;
+      const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${document.getElementById('sanction-ref').innerText || 'Sanction_Order'}.doc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      executeLogin();
+    });
   </script>
 </body>
 </html>
