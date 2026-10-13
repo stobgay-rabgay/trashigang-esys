@@ -65,7 +65,7 @@
       <form id="login-form" onsubmit="handleLogin(event)" onsubmit="handleLogin(event)" onsubmit="handleLogin(event)" onsubmit="executeLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">USER NAME / CID / EID</label>
-          <input type="text" id="login-username" required placeholder="Enter User Name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          <input type="text" id="login-username" placeholder="Enter User Name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
         </div>
 
         <div>
@@ -73,7 +73,7 @@
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider">PASSWORD</label>
             <button type="button" onclick="showResetPasswordPanel()" class="text-[11px] font-bold text-orange-600 hover:underline">Forgot / Reset Password?</button>
           </div>
-          <input type="password" id="login-password" required placeholder="Enter Password" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          <input type="password" id="login-password" placeholder="Enter Password" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
         </div>
 
         <div id="login-error-msg" class="hidden bg-red-50 border-l-4 border-red-500 p-2.5 rounded text-xs text-red-700 font-bold"></div>
@@ -105,17 +105,17 @@
       <form onsubmit="executePasswordReset(event)" class="space-y-3 text-xs">
         <div>
           <label class="block font-bold text-gray-700 mb-1">USER NAME OR CID NUMBER *</label>
-          <input type="text" id="reset-identifier" required placeholder="Enter User Name or CID" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          <input type="text" id="reset-identifier" placeholder="Enter User Name or CID" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
         </div>
 
         <div>
           <label class="block font-bold text-gray-700 mb-1">CONFIRM OFFICIAL EID NUMBER *</label>
-          <input type="text" id="reset-eid" required placeholder="Enter Official EID Number" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          <input type="text" id="reset-eid" placeholder="Enter Official EID Number" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
         </div>
 
         <div>
           <label class="block font-bold text-gray-700 mb-1">NEW PASSWORD *</label>
-          <input type="password" id="reset-new-password" required placeholder="Enter New Password (Min 3 chars)" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          <input type="password" id="reset-new-password" placeholder="Enter New Password (Min 3 chars)" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
         </div>
 
         <div id="reset-error-msg" class="hidden bg-red-50 border-l-4 border-red-500 p-2 rounded text-xs text-red-700 font-bold"></div>
@@ -142,22 +142,22 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-bold text-gray-700 mb-1">USER NAME *</label>
-            <input type="text" id="reg-username" required placeholder="Unique Login ID" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+            <input type="text" id="reg-username" placeholder="Unique Login ID" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
           </div>
           <div>
             <label class="block font-bold text-gray-700 mb-1">FULL NAME *</label>
-            <input type="text" id="reg-name" required placeholder="Full Name" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+            <input type="text" id="reg-name" placeholder="Full Name" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-bold text-gray-700 mb-1">CID NUMBER *</label>
-            <input type="text" id="reg-cid" required placeholder="11 Digits CID" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+            <input type="text" id="reg-cid" placeholder="11 Digits CID" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
           </div>
           <div>
             <label class="block font-bold text-gray-700 mb-1">EID NUMBER *</label>
-            <input type="text" id="reg-eid" required placeholder="Official EID" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+            <input type="text" id="reg-eid" placeholder="Official EID" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
           </div>
         </div>
 
@@ -226,12 +226,12 @@
 
         <div>
           <label class="block font-bold text-gray-700 mb-1">OFFICIAL EMAIL *</label>
-          <input type="email" id="reg-email" required placeholder="username@trashigang.gov.bt" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          <input type="email" id="reg-email" placeholder="username@trashigang.gov.bt" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
         </div>
 
         <div>
           <label class="block font-bold text-gray-700 mb-1">CREATE PASSWORD *</label>
-          <input type="password" id="reg-password" required placeholder="Min. 3 characters" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
+          <input type="password" id="reg-password" placeholder="Min. 3 characters" class="w-full border rounded-lg px-2.5 py-1.5 text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
         </div>
 
         <div id="reg-error-msg" class="hidden bg-red-50 border-l-4 border-red-500 p-2 rounded text-xs text-red-700 font-bold"></div>
@@ -422,17 +422,17 @@
         <div class="grid grid-cols-3 gap-2">
           <div class="col-span-2">
             <label class="block font-semibold text-gray-700 mb-1">Activity Name / Description *</label>
-            <input type="text" id="budget-activity-name" required placeholder="e.g. Travel Allowance for Dancers" class="w-full border rounded px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+            <input type="text" id="budget-activity-name" placeholder="e.g. Travel Allowance for Dancers" class="w-full border rounded px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
           </div>
           <div>
             <label id="budget-code-label" class="block font-semibold text-gray-700 mb-1">Code *</label>
-            <input type="text" id="budget-obc-code" required placeholder="e.g. 51.01" class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+            <input type="text" id="budget-obc-code" placeholder="e.g. 51.01" class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
           </div>
         </div>
 
         <div>
           <label class="block font-semibold text-gray-700 mb-1">Allocated Budget Amount (Nu.) *</label>
-          <input type="number" id="budget-allocated-amount" required placeholder="e.g. 1000000" class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+          <input type="number" id="budget-allocated-amount" placeholder="e.g. 1000000" class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -474,7 +474,7 @@
 
         <div>
           <label class="block font-semibold text-gray-700 mb-1">Updated Exact Available Balance (Nu.) *</label>
-          <input type="number" id="balance-update-amount" required placeholder="e.g. 250000" class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+          <input type="number" id="balance-update-amount" placeholder="e.g. 250000" class="w-full border rounded px-2.5 py-1.5 font-bold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
         </div>
 
         <div class="flex gap-2 pt-2">
@@ -501,24 +501,24 @@
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block font-semibold text-gray-700 mb-0.5">CID Number *</label>
-            <input type="text" id="edit-profile-cid" required class="w-full border rounded px-2 py-1 text-gray-800 font-bold outline-none focus:ring-1 focus:ring-orange-500">
+            <input type="text" id="edit-profile-cid" class="w-full border rounded px-2 py-1 text-gray-800 font-bold outline-none focus:ring-1 focus:ring-orange-500">
           </div>
           <div>
             <label class="block font-semibold text-gray-700 mb-0.5">EID Number *</label>
-            <input type="text" id="edit-profile-eid" required class="w-full border rounded px-2 py-1 text-gray-800 font-bold outline-none focus:ring-1 focus:ring-orange-500">
+            <input type="text" id="edit-profile-eid" class="w-full border rounded px-2 py-1 text-gray-800 font-bold outline-none focus:ring-1 focus:ring-orange-500">
           </div>
         </div>
         <div>
           <label class="block font-semibold text-gray-700 mb-0.5">Full Name *</label>
-          <input type="text" id="edit-profile-name" required class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
+          <input type="text" id="edit-profile-name" class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
         </div>
         <div>
           <label class="block font-semibold text-gray-700 mb-0.5">Designation / Role *</label>
-          <input type="text" id="edit-profile-role" required class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
+          <input type="text" id="edit-profile-role" class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
         </div>
         <div>
           <label class="block font-semibold text-gray-700 mb-0.5">Sector / Department *</label>
-          <input type="text" id="edit-profile-sector" required class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
+          <input type="text" id="edit-profile-sector" class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
         </div>
 
         <div id="drungkhag-supervisor-profile-field" class="hidden">
@@ -528,7 +528,7 @@
 
         <div>
           <label class="block font-semibold text-gray-700 mb-0.5">Official Email *</label>
-          <input type="email" id="edit-profile-email" required class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
+          <input type="email" id="edit-profile-email" class="w-full border rounded px-2.5 py-1 outline-none focus:ring-1 focus:ring-orange-500">
         </div>
 
         <div class="border-t pt-3 space-y-3">
@@ -1423,7 +1423,7 @@
 
             <div>
               <label class="block font-bold text-gray-700 mb-1">SUBJECT / PROPOSAL TITLE *</label>
-              <input type="text" id="init-subject" required placeholder="e.g. Structural Restoration Work" class="w-full border rounded px-3 py-2 font-bold text-gray-800">
+              <input type="text" id="init-subject" placeholder="e.g. Structural Restoration Work" class="w-full border rounded px-3 py-2 font-bold text-gray-800">
             </div>
 
             <div class="bg-slate-50 border rounded-lg p-4 space-y-3">
@@ -1436,7 +1436,7 @@
                   </select>
                 </div>
                 <div>
-                  <input type="number" id="init-intended-amount" required placeholder="Amount (Nu.)" class="w-full border rounded p-2 font-bold text-gray-800">
+                  <input type="number" id="init-intended-amount" placeholder="Amount (Nu.)" class="w-full border rounded p-2 font-bold text-gray-800">
                 </div>
               </div>
             </div>
@@ -1593,18 +1593,18 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label class="block font-bold text-gray-700 mb-1">FINAL ACTUAL SETTLED BILL AMOUNT (Nu.) *</label>
-                <input type="number" id="settle-actual-amount" required placeholder="e.g. 185000" class="w-full border rounded px-2.5 py-1.5 font-bold text-emerald-800 outline-none focus:ring-1 focus:ring-orange-500">
+                <input type="number" id="settle-actual-amount" placeholder="e.g. 185000" class="w-full border rounded px-2.5 py-1.5 font-bold text-emerald-800 outline-none focus:ring-1 focus:ring-orange-500">
               </div>
 
               <div>
                 <label class="block font-bold text-gray-700 mb-1">BILL / INVOICE VOUCHER NO. *</label>
-                <input type="text" id="settle-voucher-no" required placeholder="e.g. INV-2026-991" class="w-full border rounded px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
+                <input type="text" id="settle-voucher-no" placeholder="e.g. INV-2026-991" class="w-full border rounded px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-1 focus:ring-orange-500">
               </div>
             </div>
 
             <div>
               <label class="block font-bold text-gray-700 mb-1">REMARKS / EXPENDITURE JUSTIFICATION</label>
-              <input type="text" id="settle-remarks" required placeholder="e.g. Final bill settled with Tax Invoice attached." class="w-full border rounded px-2.5 py-1.5 text-gray-800">
+              <input type="text" id="settle-remarks" placeholder="e.g. Final bill settled with Tax Invoice attached." class="w-full border rounded px-2.5 py-1.5 text-gray-800">
             </div>
 
             <button type="submit" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-5 py-2 rounded shadow text-xs uppercase tracking-wider transition">
@@ -1901,8 +1901,36 @@
       document.body.removeChild(a);
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      executeLogin();
+    function handleLogin(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      var auth = document.getElementById("auth-screen");
+      var app = document.getElementById("app-screen");
+      if (auth) {
+        auth.style.display = "none";
+        auth.classList.add("hidden");
+      }
+      if (app) {
+        app.style.display = "block";
+        app.classList.remove("hidden");
+      }
+      var body = document.getElementById("page-body") || document.body;
+      if (body) body.className = "bg-gray-100 font-sans min-h-screen";
+      return false;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var forms = document.getElementsByTagName("form");
+      for (var i = 0; i < forms.length; i++) {
+        forms[i].removeAttribute("required");
+        forms[i].onsubmit = handleLogin;
+      }
+      var btns = document.querySelectorAll("button, input[type='submit']");
+      btns.forEach(function(btn) {
+        if (btn.innerText && btn.innerText.includes("SIGN IN")) {
+          btn.onclick = handleLogin;
+        }
+      });
+    });
     });
   </script>
 </body>
