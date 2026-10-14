@@ -33,6 +33,31 @@
       });
     }
 
+
+    // Save and load logged-in user session across reloads
+    function saveUserSession(user) {
+      localStorage.setItem("esys_active_user", JSON.stringify(user));
+    }
+
+    function loadUserSession() {
+      const stored = localStorage.getItem("esys_active_user");
+      if (stored) {
+        try {
+          const u = JSON.parse(stored);
+          if (u && u.name) {
+            currentUser = u;
+            const disp = document.getElementById('user-display-name') || document.querySelector('.user-name');
+            if (disp) disp.innerText = u.name;
+            const authScreen = document.getElementById('auth-screen');
+            const appScreen = document.getElementById('app-screen');
+            if (authScreen) authScreen.classList.add('hidden');
+            if (appScreen) appScreen.classList.remove('hidden');
+          }
+        } catch(e){}
+      }
+    }
+    document.addEventListener("DOMContentLoaded", loadUserSession);
+
 </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
