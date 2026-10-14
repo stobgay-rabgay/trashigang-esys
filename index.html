@@ -13,6 +13,26 @@
       }
     }
 
+
+    function downloadSanctionPDF(refId) {
+      const element = document.getElementById('printable-sanction');
+      const opt = {
+        margin:       [0.3, 0.3, 0.3, 0.3],
+        filename:     (refId || 'Notesheet_Sanction_Order') + '.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      
+      // Temporary hide action buttons during capture
+      const buttons = element.querySelectorAll('.no-print');
+      buttons.forEach(b => b.style.display = 'none');
+      
+      html2pdf().set(opt).from(element).save().then(() => {
+        buttons.forEach(b => b.style.display = '');
+      });
+    }
+
 </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
