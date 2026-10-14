@@ -1,6 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <script>
+    (function() {
+      try {
+        var activeUser = localStorage.getItem("esys_active_user");
+        if (activeUser) {
+          var user = JSON.parse(activeUser);
+          window.__SAVED_USER__ = user;
+        }
+      } catch(e) {}
+    })();
+
+    document.addEventListener("DOMContentLoaded", function() {
+      if (window.__SAVED_USER__) {
+        var u = window.__SAVED_USER__;
+        if (typeof currentUser !== 'undefined') {
+          currentUser.name = u.name || currentUser.name;
+          currentUser.eid = u.eid || currentUser.eid;
+          currentUser.roleTitle = u.roleTitle || currentUser.roleTitle;
+          currentUser.sector = u.sector || currentUser.sector;
+        }
+        
+        var nameElem = document.getElementById("user-display-name") || document.querySelector(".user-name");
+        var eidElem = document.getElementById("user-emp-id");
+        var avatarElem = document.getElementById("user-avatar");
+        
+        if (nameElem) nameElem.innerText = u.name + (u.roleTitle ? " (" + u.roleTitle + ")" : "");
+        if (eidElem) eidElem.innerText = "EID: " + (u.eid || "Verified");
+        if (avatarElem && u.name) {
+          avatarElem.innerText = u.name.split(" ").map(function(n){ return n[0]; }).join("").toUpperCase();
+        }
+
+        var auth = document.getElementById("auth-screen");
+        var app = document.getElementById("app-screen");
+        if (auth) auth.classList.add("hidden");
+        if (app) {
+          app.classList.remove("hidden");
+          app.style.display = "block";
+        }
+      }
+    });
+
+    function saveUserSessionDirect(name, eid, roleTitle, sector) {
+      var u = { name: name, eid: eid, roleTitle: roleTitle, sector: sector };
+      localStorage.setItem("esys_active_user", JSON.stringify(u));
+    }
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trashigang Dzongkhag E-Sys</title>
