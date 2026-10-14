@@ -1,159 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <script>
-    (function() {
-      try {
-        var activeUser = localStorage.getItem("esys_active_user");
-        if (activeUser) {
-          var user = JSON.parse(activeUser);
-          window.__SAVED_USER__ = user;
-        }
-      } catch(e) {}
-    })();
-
-    document.addEventListener("DOMContentLoaded", function() {
-      if (window.__SAVED_USER__) {
-        var u = window.__SAVED_USER__;
-        if (typeof currentUser !== 'undefined') {
-          currentUser.name = u.name || currentUser.name;
-          currentUser.eid = u.eid || currentUser.eid;
-          currentUser.roleTitle = u.roleTitle || currentUser.roleTitle;
-          currentUser.sector = u.sector || currentUser.sector;
-        }
-        
-        var nameElem = document.getElementById("user-display-name") || document.querySelector(".user-name");
-        var eidElem = document.getElementById("user-emp-id");
-        var avatarElem = document.getElementById("user-avatar");
-        
-        if (nameElem) nameElem.innerText = u.name + (u.roleTitle ? " (" + u.roleTitle + ")" : "");
-        if (eidElem) eidElem.innerText = "EID: " + (u.eid || "Verified");
-        if (avatarElem && u.name) {
-          avatarElem.innerText = u.name.split(" ").map(function(n){ return n[0]; }).join("").toUpperCase();
-        }
-
-        var auth = document.getElementById("auth-screen");
-        var app = document.getElementById("app-screen");
-        if (auth) auth.classList.add("hidden");
-        if (app) {
-          app.classList.remove("hidden");
-          app.style.display = "block";
-        }
-      }
-    });
-
-    function saveUserSessionDirect(name, eid, roleTitle, sector) {
-      var u = { name: name, eid: eid, roleTitle: roleTitle, sector: sector };
-      localStorage.setItem("esys_active_user", JSON.stringify(u));
-    }
-  </script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trashigang Dzongkhag E-Sys</title>
-  <script src="https://cdn.tailwindcss.com">
-    function toggleJointFields(checked) {
-      var container = document.getElementById('joint-fields-container');
-      if (container) {
-        if (checked) container.classList.remove('hidden');
-        else container.classList.add('hidden');
-      }
-    }
-
-
-    function downloadSanctionPDF(refId) {
-      const element = document.getElementById('printable-sanction');
-      const opt = {
-        margin:       [0.3, 0.3, 0.3, 0.3],
-        filename:     (refId || 'Notesheet_Sanction_Order') + '.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
-      
-      // Temporary hide action buttons during capture
-      const buttons = element.querySelectorAll('.no-print');
-      buttons.forEach(b => b.style.display = 'none');
-      
-      html2pdf().set(opt).from(element).save().then(() => {
-        buttons.forEach(b => b.style.display = '');
-      });
-    }
-
-
-    // Full user session management & initialization
-    function saveActiveSession(userData) {
-      localStorage.setItem('esys_active_user', JSON.stringify(userData));
-    }
-
-    function restoreActiveSession() {
-      const stored = localStorage.getItem('esys_active_user');
-      if (stored) {
-        try {
-          const user = JSON.parse(stored);
-          if (user && user.name) {
-            currentUser = user;
-            
-            // Update UI Header
-            const userDisp = document.getElementById('user-display-name') || document.querySelector('.user-name');
-            const userEid = document.getElementById('user-emp-id');
-            const userAvatar = document.getElementById('user-avatar');
-            
-            if (userDisp) userDisp.innerText = user.name + (user.roleTitle ? ' (' + user.roleTitle + ')' : '');
-            if (userEid) userEid.innerText = 'EID: ' + (user.eid || 'Verified');
-            if (userAvatar && user.name) {
-              userAvatar.innerText = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
-            }
-
-            // Reveal App Dashboard directly
-            const authScreen = document.getElementById('auth-screen');
-            const appScreen = document.getElementById('app-screen');
-            if (authScreen) authScreen.classList.add('hidden');
-            if (appScreen) {
-              appScreen.classList.remove('hidden');
-              appScreen.style.display = 'block';
-            }
-            
-            var body = document.getElementById('page-body') || document.body;
-            if (body) body.className = 'bg-gray-100 font-sans min-h-screen';
-            
-            if (typeof renderWorkspace === 'function') renderWorkspace();
-          }
-        } catch(e) {}
-      }
-    }
-
-    // Intercept login to save session
-    var originalLogin = typeof handleLogin === 'function' ? handleLogin : null;
-    function handleLogin(e) {
-      if (e && e.preventDefault) e.preventDefault();
-      
-      const nameInput = document.getElementById('login-name') || document.getElementById('prof-name');
-      const eidInput = document.getElementById('login-eid') || document.getElementById('prof-eid');
-      
-      if (nameInput && nameInput.value) currentUser.name = nameInput.value;
-      if (eidInput && eidInput.value) currentUser.eid = eidInput.value;
-      
-      saveActiveSession(currentUser);
-      
-      if (originalLogin && originalLogin !== handleLogin) {
-        originalLogin(e);
-      } else {
-        const authScreen = document.getElementById('auth-screen');
-        const appScreen = document.getElementById('app-screen');
-        if (authScreen) authScreen.classList.add('hidden');
-        if (appScreen) {
-          appScreen.classList.remove('hidden');
-          appScreen.style.display = 'block';
-        }
-      }
-      return false;
-    }
-
-    document.addEventListener("DOMContentLoaded", restoreActiveSession);
-
-</script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     @media print {
@@ -186,7 +37,7 @@
         <p class="text-xs text-gray-500 italic">Integrated Dzongkhag E-Notesheet & Administrative Workflow System</p>
       </div>
 
-      <form onsubmit="executeLogin(event)" class="space-y-4">
+      <form onsubmit="executeLogin(event)" class="space-y-4" onsubmit="event.preventDefault(); return false;">
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">USER NAME / CID / EID</label>
           <input type="text" id="login-username" required placeholder="Enter User Name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
@@ -226,7 +77,7 @@
         <p class="text-xs text-gray-500 italic">Verify your official CID & EID to create a new password</p>
       </div>
 
-      <form onsubmit="executePasswordReset(event)" class="space-y-3 text-xs">
+      <form onsubmit="executePasswordReset(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
         <div>
           <label class="block font-bold text-gray-700 mb-1">USER NAME OR CID NUMBER *</label>
           <input type="text" id="reset-identifier" required placeholder="Enter User Name or CID" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
@@ -262,7 +113,7 @@
         <p class="text-xs text-gray-500 italic">Create your unique official credential profile</p>
       </div>
 
-      <form onsubmit="executeRegistration(event)" class="space-y-3 text-xs">
+      <form onsubmit="executeRegistration(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-bold text-gray-700 mb-1">USER NAME *</label>
@@ -382,7 +233,7 @@
     <header class="bg-white border-b-2 border-orange-500 shadow-sm px-6 py-4 no-print">
       <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
         <div class="w-1/4 flex justify-start">
-          <img src="emblem.png" alt="Emblem" class="w-16 h-16 object-contain">
+          <img src="emblem.png" alt="Emblem" class="w-16 h-16 object-contain" onerror="this.src="emblem.png"">
         </div>
 
         <div class="w-2/4 text-center">
@@ -530,7 +381,7 @@
         <button onclick="closeBudgetActivityModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
       </div>
 
-      <form onsubmit="saveBudgetActivity(event)" class="space-y-3 text-xs">
+      <form onsubmit="saveBudgetActivity(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
         <input type="hidden" id="budget-edit-scope">
         <input type="hidden" id="budget-edit-id">
 
@@ -589,7 +440,7 @@
         <button onclick="closeUpdateBalanceModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
       </div>
 
-      <form onsubmit="saveMidYearBalance(event)" class="space-y-3 text-xs">
+      <form onsubmit="saveMidYearBalance(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
         <div>
           <label class="block font-semibold text-gray-700 mb-1">Select Activity Budget Line *</label>
           <select id="balance-update-activity-select" required class="w-full border rounded px-2.5 py-1.5 text-gray-800 font-semibold outline-none focus:ring-1 focus:ring-orange-500">
@@ -617,7 +468,7 @@
         <button onclick="closeProfileModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
       </div>
 
-      <form onsubmit="saveProfileUpdates(event)" class="space-y-3 text-xs">
+      <form onsubmit="saveProfileUpdates(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
         <div>
           <label class="block font-semibold text-gray-700 mb-0.5">User Name (Login ID)</label>
           <input type="text" id="edit-profile-username" disabled class="w-full border bg-gray-100 rounded px-2.5 py-1 text-gray-600 font-bold">
@@ -691,7 +542,7 @@
     <div class="bg-white rounded-lg shadow-2xl max-w-3xl w-full p-8 space-y-6 max-h-[90vh] overflow-y-auto" id="printable-sanction">
       <div class="flex items-center justify-between border-b-2 border-orange-600 pb-4">
         <div class="w-1/4 flex justify-start">
-          <img src="emblem.png" alt="Emblem" class="w-16 h-16 object-contain shrink-0">
+          <img src="emblem.png" alt="Emblem" class="w-16 h-16 object-contain" onerror="this.src="emblem.png"">
         </div>
         <div class="w-2/4 text-center">
           <h3 class="text-xs font-bold text-gray-700">དཔལ་ལྡན་འབྲུག་གཞུང་། རྫོང་ཁག་བདག་སྐྱོང་ བཀྲིས་སྒང་།</h3>
@@ -1527,7 +1378,7 @@
             </span>
           </div>
 
-          <form onsubmit="submitInitiatorNotesheet(event)" class="space-y-4 text-xs">
+          <form onsubmit="submitInitiatorNotesheet(event)" class="space-y-4 text-xs" onsubmit="event.preventDefault(); return false;">
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block font-bold text-gray-700 mb-1">NOTESHEET CATEGORY *</label>
@@ -1565,27 +1416,7 @@
               </div>
             </div>
 
-            
-        <!-- JOINT SECTOR SELECTION BLOCK -->
-        <div class="border rounded-lg p-3 bg-slate-50 space-y-3 my-4">
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="is-joint-checkbox" onchange="var c = document.getElementById('joint-fields-box'); if(c) { if(this.checked) c.classList.remove('hidden'); else c.classList.add('hidden'); }" class="rounded text-orange-600 focus:ring-orange-500 w-4 h-4">
-            <label for="is-joint-checkbox" class="text-xs font-bold text-gray-800 cursor-pointer">Is this a Joint Sector Notesheet?</label>
-          </div>
-          
-          <div id="joint-fields-box" class="hidden space-y-3 pt-2 border-t border-gray-200">
-            <div>
-              <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">Co-Sponsoring / Joint Sectors</label>
-              <input type="text" id="joint-sectors-input" placeholder="e.g. Planning Sector, Finance Sector, Engineering" class="w-full border border-gray-300 rounded p-2 text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">Verifier Officer Name & Title</label>
-              <input type="text" id="joint-verifier-input" placeholder="e.g. Tashi Namgyal (Planning Officer)" class="w-full border border-gray-300 rounded p-2 text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none">
-            </div>
-          </div>
-        </div>
-
-<button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2.5 rounded-lg shadow text-xs uppercase transition">
+            <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2.5 rounded-lg shadow text-xs uppercase transition">
               🚀 Submit Sanction Request
             </button>
           </form>
@@ -1716,7 +1547,7 @@
             </span>
           </div>
 
-          <form onsubmit="submitBillSettlement(event)" class="bg-slate-50 border p-4 rounded-lg space-y-4 text-xs">
+          <form onsubmit="submitBillSettlement(event)" class="bg-slate-50 border p-4 rounded-lg space-y-4 text-xs" onsubmit="event.preventDefault(); return false;">
             <h3 class="font-bold text-gray-800 uppercase border-b pb-2">Submit New Bill Settlement (Deducts Available Balance)</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1984,7 +1815,88 @@
     function downloadSanctionDoc() {
       const content = document.getElementById('printable-sanction').innerHTML;
       const htmlHeader = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Sanction Order</title><style>body { font-family: Arial, sans-serif; margin: 1in; } .no-print { display: none; }</style></head><body>";
-      const htmlFooter = "</body></html>";
+      const htmlFooter = "
+  <!-- SESSION PERSISTENCE & FORM RELOAD PREVENTION ENGINE -->
+  <script>
+    (function() {
+      // Save current user state to local storage
+      window.saveCurrentSession = function() {
+        if (typeof currentUser !== 'undefined' && currentUser) {
+          localStorage.setItem('esys_active_user', JSON.stringify(currentUser));
+          localStorage.setItem('esys_is_logged_in', 'true');
+        }
+      };
+
+      // Restore session on page load/refresh
+      window.restoreCurrentSession = function() {
+        var isLoggedIn = localStorage.getItem('esys_is_logged_in');
+        var savedUser = localStorage.getItem('esys_active_user');
+        
+        if (isLoggedIn === 'true' && savedUser) {
+          try {
+            var user = JSON.parse(savedUser);
+            if (user && user.name) {
+              if (typeof currentUser !== 'undefined') {
+                Object.assign(currentUser, user);
+              }
+
+              // Update Header DOM elements
+              var nameElem = document.getElementById("user-display-name") || document.querySelector(".user-name");
+              var eidElem = document.getElementById("user-emp-id");
+              var avatarElem = document.getElementById("user-avatar");
+              var roleElem = document.getElementById("console-user-role");
+
+              if (nameElem) nameElem.innerText = user.name + (user.roleTitle ? " (" + user.roleTitle + ")" : "");
+              if (eidElem) eidElem.innerText = "EID: " + (user.eid || "Verified");
+              if (avatarElem && user.name) {
+                avatarElem.innerText = user.name.split(" ").map(function(n){ return n[0]; }).join("").toUpperCase();
+              }
+              if (roleElem) roleElem.innerText = "Role Scope: " + (user.roleTitle || user.sector || "Executive");
+
+              // Switch from Auth screen to Main App screen
+              var auth = document.getElementById("auth-screen");
+              var app = document.getElementById("app-screen");
+              if (auth) { auth.style.display = "none"; auth.classList.add("hidden"); }
+              if (app) { app.style.display = "block"; app.classList.remove("hidden"); }
+
+              var body = document.getElementById("page-body") || document.body;
+              if (body) body.className = "bg-gray-100 font-sans min-h-screen";
+
+              if (typeof renderWorkspace === "function") renderWorkspace();
+            }
+          } catch(e) {}
+        }
+      };
+
+      document.addEventListener("DOMContentLoaded", function() {
+        window.restoreCurrentSession();
+
+        // Save session on login button click
+        var loginBtns = document.querySelectorAll("button, input[type='submit']");
+        loginBtns.forEach(function(btn) {
+          if (btn.innerText && (btn.innerText.includes("SIGN IN") || btn.innerText.includes("Access"))) {
+            btn.addEventListener("click", function() {
+              setTimeout(window.saveCurrentSession, 150);
+            });
+          }
+        });
+      });
+
+      // Override logout to properly clear saved session
+      window.logoutDirectly = function() {
+        localStorage.removeItem('esys_is_logged_in');
+        localStorage.removeItem('esys_active_user');
+        var auth = document.getElementById("auth-screen");
+        var app = document.getElementById("app-screen");
+        if (app) { app.style.display = "none"; app.classList.add("hidden"); }
+        if (auth) { auth.style.display = "block"; auth.classList.remove("hidden"); }
+        var body = document.getElementById("page-body") || document.body;
+        if (body) body.className = "bg-slate-900 font-sans min-h-screen flex items-center justify-center p-4";
+      };
+    })();
+  </script>
+
+</body></html>";
       
       const fullHtml = htmlHeader + content + htmlFooter;
       const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
