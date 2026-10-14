@@ -1817,28 +1817,149 @@
       const htmlHeader = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Sanction Order</title><style>body { font-family: Arial, sans-serif; margin: 1in; } .no-print { display: none; }</style></head><body>";
       const htmlFooter = "
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      try {
-        var isLogged = localStorage.getItem('esys_logged_in');
-        var savedUser = localStorage.getItem('esys_active_user');
-        if (isLogged === 'true' && savedUser) {
-          var u = JSON.parse(savedUser);
-          if (u && typeof currentUser !== 'undefined') {
-            Object.assign(currentUser, u);
-            var nameElem = document.getElementById('user-display-name') || document.querySelector('.user-name');
-            var eidElem = document.getElementById('user-emp-id');
-            if (nameElem) nameElem.innerText = currentUser.name + (currentUser.roleTitle ? ' (' + currentUser.roleTitle + ')' : '');
-            if (eidElem) eidElem.innerText = 'EID: ' + (currentUser.eid || 'Verified');
-            
-            var auth = document.getElementById('auth-screen');
-            var app = document.getElementById('app-screen');
-            if (auth) auth.classList.add('hidden');
-            if (app) { app.classList.remove('hidden'); app.style.display = 'block'; }
-            if (typeof renderWorkspace === 'function') renderWorkspace();
+    (function() {
+      // 1. Session state storage
+      window.saveActiveSession = function() {
+        if (typeof currentUser !== 'undefined' && currentUser) {
+          try {
+            localStorage.setItem('esys_active_user', JSON.stringify(currentUser));
+            localStorage.setItem('esys_is_logged_in', 'true');
+          } catch(e) {}
+        }
+      };
+
+      // 2. Session state restoration on page load / refresh
+      window.restoreActiveSession = function() {
+        try {
+          var isLoggedIn = localStorage.getItem('esys_is_logged_in');
+          var savedUser = localStorage.getItem('esys_active_user');
+          if (isLoggedIn === 'true' && savedUser) {
+            var u = JSON.parse(savedUser);
+            if (u && u.name) {
+              if (typeof currentUser !== 'undefined') {
+                Object.assign(currentUser, u);
+              }
+              window.updateHeaderUI();
+              
+              var auth = document.getElementById('auth-screen');
+              var app = document.getElementById('app-screen');
+              if (auth) { auth.style.display = 'none'; auth.classList.add('hidden'); }
+              if (app) { app.style.display = 'block'; app.classList.remove('hidden'); }
+              
+              var body = document.getElementById('page-body') || document.body;
+              if (body) body.className = "bg-gray-100 font-sans min-h-screen";
+
+              if (typeof renderWorkspace === 'function') renderWorkspace();
+            }
+          }
+        } catch(e) {}
+      };
+
+      // 3. Header UI updater
+      window.updateHeaderUI = function() {
+        if (typeof currentUser === 'undefined' || !currentUser) return;
+        var u = currentUser;
+        var nameElem = document.getElementById('user-display-name') || document.querySelector('.user-name');
+        var eidElem = document.getElementById('user-emp-id');
+        var avatarElem = document.getElementById('user-avatar');
+        var roleElem = document.getElementById('console-user-role');
+
+        if (nameElem) nameElem.innerText = u.name + (u.roleTitle ? ' (' + u.roleTitle + ')' : '');
+        if (eidElem) eidElem.innerText = 'EID: ' + (u.eid || 'Verified');
+        if (avatarElem && u.name) {
+          avatarElem.innerText = u.name.split(' ').map(function(n){ return n[0]; }).join('').toUpperCase();
+        }
+        if (roleElem) roleElem.innerText = 'Role Scope: ' + (u.roleTitle || u.sector || 'Executive');
+      };
+
+      // 4. Clean Login Handler
+      window.executePortalLogin = function(e) {
+        if (e) {
+          if (e.preventDefault) e.preventDefault();
+          if (e.stopPropagation) e.stopPropagation();
+        }
+
+        var roleSelect = document.getElementById('role-select') || document.querySelector('select');
+        var nameInput = document.getElementById('login-name') || document.getElementById('username');
+        var eidInput = document.getElementById('login-eid');
+
+        if (roleSelect && roleSelect.value) {
+          var val = roleSelect.value.toUpperCase();
+          if (val.includes('CULTURAL') || val.includes('CULTURE')) {
+            window.currentUser = { name: "Sonam Tobgay", eid: "E202401925505", roleType: "CULTURAL_OFFICER", roleTitle: "Cultural Officer", sector: "Culture Sector" };
+          } else if (val.includes('DZONGDAG') || val.includes('DZONGRAB')) {
+            window.currentUser = { name: "Ugyen Dorji", eid: "E9991", roleType: "DZONGDAG_DZONGRAB", roleTitle: "Dasho Dzongdag", sector: "Executive" };
+          } else if (val.includes('PLANNING')) {
+            window.currentUser = { name: "Tashi Namgyal", eid: "E7773", roleType: "PLANNING_OFFICER", roleTitle: "Planning Officer", sector: "Planning Sector" };
+          } else if (val.includes('FINANCE')) {
+            window.currentUser = { name: "Kinley Penjor", eid: "E6664", roleType: "FINANCE_OFFICER", roleTitle: "Finance Officer", sector: "Finance Sector" };
           }
         }
-      } catch(e) {}
-    });
+
+        if (nameInput && nameInput.value && nameInput.value.trim() !== '') {
+          if (typeof currentUser !== 'undefined') currentUser.name = nameInput.value.trim();
+        }
+        if (eidInput && eidInput.value && eidInput.value.trim() !== '') {
+          if (typeof currentUser !== 'undefined') currentUser.eid = eidInput.value.trim();
+        }
+
+        window.saveActiveSession();
+        window.updateHeaderUI();
+
+        var auth = document.getElementById('auth-screen');
+        var app = document.getElementById('app-screen');
+        if (auth) { auth.style.display = 'none'; auth.classList.add('hidden'); }
+        if (app) { app.style.display = 'block'; app.classList.remove('hidden'); }
+
+        var body = document.getElementById('page-body') || document.body;
+        if (body) body.className = "bg-gray-100 font-sans min-h-screen";
+
+        if (typeof renderWorkspace === 'function') renderWorkspace();
+        return false;
+      };
+
+      // 5. Logout Handler
+      window.logoutDirectly = function() {
+        try {
+          localStorage.removeItem('esys_is_logged_in');
+          localStorage.removeItem('esys_active_user');
+        } catch(e) {}
+        var auth = document.getElementById('auth-screen');
+        var app = document.getElementById('app-screen');
+        if (app) { app.style.display = 'none'; app.classList.add('hidden'); }
+        if (auth) { auth.style.display = 'block'; auth.classList.remove('hidden'); }
+        var body = document.getElementById('page-body') || document.body;
+        if (body) body.className = 'bg-slate-900 font-sans min-h-screen flex items-center justify-center p-4';
+      };
+
+      // Wire bindings on DOM Load
+      document.addEventListener("DOMContentLoaded", function() {
+        // Intercept form submissions
+        var forms = document.querySelectorAll('form');
+        forms.forEach(function(f) {
+          f.onsubmit = function(e) {
+            e.preventDefault();
+            var auth = document.getElementById('auth-screen');
+            if (auth && !auth.classList.contains('hidden') && auth.style.display !== 'none') {
+              window.executePortalLogin(e);
+            }
+            return false;
+          };
+        });
+
+        // Intercept login buttons
+        var btns = document.querySelectorAll('button, input[type="submit"]');
+        btns.forEach(function(b) {
+          var txt = (b.innerText || b.value || '').toUpperCase();
+          if (txt.includes('SIGN IN') || txt.includes('LOGIN') || txt.includes('ACCESS')) {
+            b.onclick = window.executePortalLogin;
+          }
+        });
+
+        // Attempt automatic session restore
+        window.restoreActiveSession();
+      });
+    })();
   </script>
 
 </body></html>";
@@ -1854,9 +1975,7 @@
       document.body.removeChild(a);
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      executeLogin();
-    });
+    // Cleaned event listener
   </script>
 </body>
 </html>
