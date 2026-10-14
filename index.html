@@ -37,7 +37,7 @@
         <p class="text-xs text-gray-500 italic">Integrated Dzongkhag E-Notesheet & Administrative Workflow System</p>
       </div>
 
-      <form onsubmit="executeLogin(event)" class="space-y-4" onsubmit="event.preventDefault(); return false;">
+      <form onsubmit="executeLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">USER NAME / CID / EID</label>
           <input type="text" id="login-username" required placeholder="Enter User Name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
@@ -77,7 +77,7 @@
         <p class="text-xs text-gray-500 italic">Verify your official CID & EID to create a new password</p>
       </div>
 
-      <form onsubmit="executePasswordReset(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
+      <form onsubmit="executePasswordReset(event)" class="space-y-3 text-xs">
         <div>
           <label class="block font-bold text-gray-700 mb-1">USER NAME OR CID NUMBER *</label>
           <input type="text" id="reset-identifier" required placeholder="Enter User Name or CID" class="w-full border rounded-lg px-2.5 py-1.5 font-semibold text-gray-800 outline-none focus:ring-2 focus:ring-orange-500">
@@ -113,7 +113,7 @@
         <p class="text-xs text-gray-500 italic">Create your unique official credential profile</p>
       </div>
 
-      <form onsubmit="executeRegistration(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
+      <form onsubmit="executeRegistration(event)" class="space-y-3 text-xs">
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-bold text-gray-700 mb-1">USER NAME *</label>
@@ -327,11 +327,6 @@
           <div class="bg-white rounded-lg shadow border overflow-hidden">
             <div class="bg-gray-100 p-3 font-bold text-xs text-gray-700 uppercase border-b">
               SYSTEM MODULES
-
-            <li onclick="openCalendarModal()" class="p-2 bg-gray-50 rounded hover:bg-orange-50 cursor-pointer flex items-center gap-2 text-gray-700 hover:text-orange-700 font-medium text-xs">
-              📅 Event Calendar
-            </li>
-
             </div>
             <nav class="p-2 space-y-1 text-xs">
               <button onclick="switchTab('notesheet')" id="nav-btn-notesheet" class="w-full text-left px-3 py-2 rounded font-bold text-gray-700 hover:bg-gray-100">
@@ -386,7 +381,7 @@
         <button onclick="closeBudgetActivityModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
       </div>
 
-      <form onsubmit="saveBudgetActivity(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
+      <form onsubmit="saveBudgetActivity(event)" class="space-y-3 text-xs">
         <input type="hidden" id="budget-edit-scope">
         <input type="hidden" id="budget-edit-id">
 
@@ -445,7 +440,7 @@
         <button onclick="closeUpdateBalanceModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
       </div>
 
-      <form onsubmit="saveMidYearBalance(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
+      <form onsubmit="saveMidYearBalance(event)" class="space-y-3 text-xs">
         <div>
           <label class="block font-semibold text-gray-700 mb-1">Select Activity Budget Line *</label>
           <select id="balance-update-activity-select" required class="w-full border rounded px-2.5 py-1.5 text-gray-800 font-semibold outline-none focus:ring-1 focus:ring-orange-500">
@@ -473,7 +468,7 @@
         <button onclick="closeProfileModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
       </div>
 
-      <form onsubmit="saveProfileUpdates(event)" class="space-y-3 text-xs" onsubmit="event.preventDefault(); return false;">
+      <form onsubmit="saveProfileUpdates(event)" class="space-y-3 text-xs">
         <div>
           <label class="block font-semibold text-gray-700 mb-0.5">User Name (Login ID)</label>
           <input type="text" id="edit-profile-username" disabled class="w-full border bg-gray-100 rounded px-2.5 py-1 text-gray-600 font-bold">
@@ -1383,7 +1378,7 @@
             </span>
           </div>
 
-          <form onsubmit="submitInitiatorNotesheet(event)" class="space-y-4 text-xs" onsubmit="event.preventDefault(); return false;">
+          <form onsubmit="submitInitiatorNotesheet(event)" class="space-y-4 text-xs">
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block font-bold text-gray-700 mb-1">NOTESHEET CATEGORY *</label>
@@ -1421,27 +1416,7 @@
               </div>
             </div>
 
-            
-        <!-- JOINT SECTOR SELECTION BLOCK -->
-        <div class="border rounded-lg p-3 bg-slate-50 space-y-3 my-4">
-          <div class="flex items-center gap-2">
-            <input type="checkbox" id="is-joint-checkbox" onchange="var c = document.getElementById('joint-fields-box'); if(c) { if(this.checked) c.classList.remove('hidden'); else c.classList.add('hidden'); }" class="rounded text-orange-600 focus:ring-orange-500 w-4 h-4">
-            <label for="is-joint-checkbox" class="text-xs font-bold text-gray-800 cursor-pointer">Is this a Joint Sector Notesheet?</label>
-          </div>
-          
-          <div id="joint-fields-box" class="hidden space-y-3 pt-2 border-t border-gray-200">
-            <div>
-              <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">Co-Sponsoring / Joint Sectors</label>
-              <input type="text" id="joint-sectors-input" placeholder="e.g. Planning Sector, Finance Sector, Engineering" class="w-full border border-gray-300 rounded p-2 text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">Verifier Officer Name & Title</label>
-              <input type="text" id="joint-verifier-input" placeholder="e.g. Tashi Namgyal (Planning Officer)" class="w-full border border-gray-300 rounded p-2 text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none">
-            </div>
-          </div>
-        </div>
-
-<button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2.5 rounded-lg shadow text-xs uppercase transition">
+            <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2.5 rounded-lg shadow text-xs uppercase transition">
               🚀 Submit Sanction Request
             </button>
           </form>
@@ -1572,7 +1547,7 @@
             </span>
           </div>
 
-          <form onsubmit="submitBillSettlement(event)" class="bg-slate-50 border p-4 rounded-lg space-y-4 text-xs" onsubmit="event.preventDefault(); return false;">
+          <form onsubmit="submitBillSettlement(event)" class="bg-slate-50 border p-4 rounded-lg space-y-4 text-xs">
             <h3 class="font-bold text-gray-800 uppercase border-b pb-2">Submit New Bill Settlement (Deducts Available Balance)</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1841,157 +1816,133 @@
       const content = document.getElementById('printable-sanction').innerHTML;
       const htmlHeader = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Sanction Order</title><style>body { font-family: Arial, sans-serif; margin: 1in; } .no-print { display: none; }</style></head><body>";
       const htmlFooter = "
-  <!-- EVENT CALENDAR MODAL -->
-  <div id="calendar-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b pb-3">
-        <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">📅 Dzongkhag Event Calendar</h3>
-        <button type="button" onclick="closeCalendarModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">&times;</button>
-      </div>
-      <div class="space-y-3">
-        <div class="flex justify-between items-center bg-gray-50 p-2.5 rounded-lg border">
-          <span class="text-xs font-bold text-gray-800">October 2026</span>
-          <span class="text-[11px] bg-orange-100 text-orange-800 font-semibold px-2 py-0.5 rounded">Trashigang Schedule</span>
-        </div>
-        <div class="space-y-2 text-xs">
-          <div class="border rounded-lg p-3 bg-blue-50/50 flex justify-between items-center">
-            <div>
-              <div class="font-bold text-gray-900">Annual Coordination Meeting</div>
-              <div class="text-gray-500 text-[11px]">Venue: Main Conference Hall</div>
-            </div>
-            <span class="bg-blue-600 text-white px-2 py-1 rounded text-[10px] font-bold">Oct 15, 2026</span>
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-end pt-3 border-t">
-        <button type="button" onclick="closeCalendarModal()" class="bg-slate-800 text-white font-bold text-xs px-4 py-2 rounded-lg hover:bg-slate-900">Close</button>
-      </div>
-    </div>
-  </div>
-
-
   <script>
-    (function() {
-      window.currentUser = window.currentUser || {
-        name: "Sonam Tobgay",
-        eid: "E202401925505",
-        roleType: "CULTURAL_OFFICER",
-        roleTitle: "Cultural Officer",
-        sector: "Culture Sector",
-        signatureImg: ""
-      };
+    window.currentUser = window.currentUser || {
+      name: "Sonam Tobgay",
+      eid: "E202401925505",
+      roleType: "CULTURAL_OFFICER",
+      roleTitle: "Cultural Officer",
+      sector: "Culture Sector"
+    };
 
-      window.saveSession = function() {
-        try {
-          localStorage.setItem('esys_logged_in', 'true');
-          localStorage.setItem('esys_active_user', JSON.stringify(window.currentUser));
-        } catch(e){}
-      };
+    function executeLogin(e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+      }
 
-      window.restoreSession = function() {
-        var isLogged = localStorage.getItem('esys_logged_in');
-        var storedUser = localStorage.getItem('esys_active_user');
-        
-        var authScreen = document.getElementById('auth-screen');
-        var appScreen = document.getElementById('app-screen');
-        
-        if (isLogged === 'true' && storedUser) {
-          try {
-            var u = JSON.parse(storedUser);
-            if (u && u.name) {
-              window.currentUser = Object.assign(window.currentUser || {}, u);
-            }
-          } catch(e) {}
-          
-          if (authScreen) { authScreen.classList.add('hidden'); authScreen.style.display = 'none'; }
-          if (appScreen) { appScreen.classList.remove('hidden'); appScreen.style.display = 'block'; }
-          
-          window.updateHeaderUI();
-          if (typeof renderWorkspace === 'function') renderWorkspace();
+      // Check input fields / select elements
+      var roleSelect = document.getElementById('role-select') || document.querySelector('select');
+      var nameInput = document.getElementById('login-name') || document.getElementById('username');
+      var eidInput = document.getElementById('login-eid');
+
+      if (roleSelect && roleSelect.value) {
+        var v = roleSelect.value.toUpperCase();
+        if (v.includes('DZONGDAG') || v.includes('DZONGRAB')) {
+          window.currentUser = { name: "Ugyen Dorji", eid: "E9991", roleType: "DZONGDAG_DZONGRAB", roleTitle: "Dasho Dzongdag", sector: "Executive" };
+        } else if (v.includes('CULTURAL') || v.includes('CULTURE')) {
+          window.currentUser = { name: "Sonam Tobgay", eid: "E202401925505", roleType: "CULTURAL_OFFICER", roleTitle: "Cultural Officer", sector: "Culture Sector" };
+        } else if (v.includes('PLANNING')) {
+          window.currentUser = { name: "Tashi Namgyal", eid: "E7773", roleType: "PLANNING_OFFICER", roleTitle: "Planning Officer", sector: "Planning Sector" };
+        } else if (v.includes('FINANCE')) {
+          window.currentUser = { name: "Kinley Penjor", eid: "E6664", roleType: "FINANCE_OFFICER", roleTitle: "Finance Officer", sector: "Finance Sector" };
         }
-      };
+      }
 
-      window.updateHeaderUI = function() {
-        if (!window.currentUser) return;
-        var u = window.currentUser;
-        var nameElem = document.getElementById('user-display-name') || document.querySelector('.user-name');
-        var eidElem = document.getElementById('user-emp-id');
-        var avatarElem = document.getElementById('user-avatar');
-        var roleElem = document.getElementById('console-user-role');
-        
-        if (nameElem) nameElem.innerText = u.name + (u.roleTitle ? ' (' + u.roleTitle + ')' : '');
-        if (eidElem) eidElem.innerText = 'EID: ' + (u.eid || 'Verified');
-        if (avatarElem && u.name) {
-          avatarElem.innerText = u.name.split(' ').map(function(n){ return n[0]; }).join('').toUpperCase();
-        }
-        if (roleElem) roleElem.innerText = 'Role Scope: ' + (u.roleTitle || u.sector || 'Executive');
-      };
+      if (nameInput && nameInput.value && nameInput.value.trim() !== '') {
+        window.currentUser.name = nameInput.value.trim();
+      }
+      if (eidInput && eidInput.value && eidInput.value.trim() !== '') {
+        window.currentUser.eid = eidInput.value.trim();
+      }
 
-      window.handleLogin = function(e) {
-        if (e && e.preventDefault) e.preventDefault();
-        
-        var roleSelect = document.getElementById('role-select');
-        var nameInput = document.getElementById('login-name') || document.getElementById('username');
-        var eidInput = document.getElementById('login-eid');
-        
-        if (roleSelect && roleSelect.value) {
-          var val = roleSelect.value;
-          if (val === 'dzongdag' || val === 'DZONGDAG_DZONGRAB') {
-            window.currentUser = { name: "Ugyen Dorji", eid: "E9991", roleType: "DZONGDAG_DZONGRAB", roleTitle: "Dasho Dzongdag", sector: "Executive" };
-          } else if (val === 'cultural' || val === 'CULTURAL_OFFICER') {
-            window.currentUser = { name: "Sonam Tobgay", eid: "E202401925505", roleType: "CULTURAL_OFFICER", roleTitle: "Cultural Officer", sector: "Culture Sector" };
-          } else if (val === 'dzongrab' || val === 'DZONGRAB') {
-            window.currentUser = { name: "Karma Tshering", eid: "E8882", roleType: "DZONGRAB", roleTitle: "Dasho Dzongrab", sector: "Executive" };
-          } else if (val === 'planning' || val === 'PLANNING_OFFICER') {
-            window.currentUser = { name: "Tashi Namgyal", eid: "E7773", roleType: "PLANNING_OFFICER", roleTitle: "Planning Officer", sector: "Planning Sector" };
-          } else if (val === 'finance' || val === 'FINANCE_OFFICER') {
-            window.currentUser = { name: "Kinley Penjor", eid: "E6664", roleType: "FINANCE_OFFICER", roleTitle: "Finance Officer", sector: "Finance Sector" };
-          }
-        }
-        
-        if (nameInput && nameInput.value) window.currentUser.name = nameInput.value;
-        if (eidInput && eidInput.value) window.currentUser.eid = eidInput.value;
-        
-        window.saveSession();
-        
-        var authScreen = document.getElementById('auth-screen');
-        var appScreen = document.getElementById('app-screen');
-        if (authScreen) { authScreen.classList.add('hidden'); authScreen.style.display = 'none'; }
-        if (appScreen) { appScreen.classList.remove('hidden'); appScreen.style.display = 'block'; }
-        
-        var body = document.getElementById('page-body') || document.body;
-        if (body) body.className = 'bg-gray-100 font-sans min-h-screen';
-        
-        window.updateHeaderUI();
-        if (typeof renderWorkspace === 'function') renderWorkspace();
-        return false;
-      };
+      // Save to localStorage
+      try {
+        localStorage.setItem('esys_active_user', JSON.stringify(window.currentUser));
+        localStorage.setItem('esys_logged_in', 'true');
+      } catch(err) {}
 
-      window.logoutDirectly = function() {
+      // Transition Screen Views
+      var auth = document.getElementById('auth-screen');
+      var app = document.getElementById('app-screen');
+
+      if (auth) { auth.style.display = 'none'; auth.classList.add('hidden'); }
+      if (app) { app.style.display = 'block'; app.classList.remove('hidden'); }
+
+      var body = document.getElementById('page-body') || document.body;
+      if (body) body.className = "bg-gray-100 font-sans min-h-screen";
+
+      // Update Header
+      var nameElem = document.getElementById('user-display-name') || document.querySelector('.user-name');
+      var eidElem = document.getElementById('user-emp-id');
+      var avatarElem = document.getElementById('user-avatar');
+      var roleElem = document.getElementById('console-user-role');
+
+      if (nameElem) nameElem.innerText = window.currentUser.name + (window.currentUser.roleTitle ? ' (' + window.currentUser.roleTitle + ')' : '');
+      if (eidElem) eidElem.innerText = 'EID: ' + (window.currentUser.eid || 'Verified');
+      if (avatarElem && window.currentUser.name) {
+        avatarElem.innerText = window.currentUser.name.split(' ').map(function(n){ return n[0]; }).join('').toUpperCase();
+      }
+      if (roleElem) roleElem.innerText = 'Role Scope: ' + (window.currentUser.roleTitle || window.currentUser.sector || 'Executive');
+
+      if (typeof renderWorkspace === 'function') renderWorkspace();
+      return false;
+    }
+
+    // Expose handlers globally
+    window.handleLogin = executeLogin;
+    window.loginUser = executeLogin;
+    window.submitLogin = executeLogin;
+
+    window.logoutDirectly = function() {
+      try {
         localStorage.removeItem('esys_logged_in');
         localStorage.removeItem('esys_active_user');
-        var authScreen = document.getElementById('auth-screen');
-        var appScreen = document.getElementById('app-screen');
-        if (appScreen) { appScreen.classList.add('hidden'); appScreen.style.display = 'none'; }
-        if (authScreen) { authScreen.classList.remove('hidden'); authScreen.style.display = 'block'; }
-        var body = document.getElementById('page-body') || document.body;
-        if (body) body.className = 'bg-slate-900 font-sans min-h-screen flex items-center justify-center p-4';
-      };
+      } catch(e) {}
+      var auth = document.getElementById('auth-screen');
+      var app = document.getElementById('app-screen');
+      if (app) { app.style.display = 'none'; app.classList.add('hidden'); }
+      if (auth) { auth.style.display = 'block'; auth.classList.remove('hidden'); }
+      var body = document.getElementById('page-body') || document.body;
+      if (body) body.className = 'bg-slate-900 font-sans min-h-screen flex items-center justify-center p-4';
+    };
 
-      window.openCalendarModal = function() {
-        var m = document.getElementById('calendar-modal');
-        if (m) m.classList.remove('hidden');
-      };
-
-      window.closeCalendarModal = function() {
-        var m = document.getElementById('calendar-modal');
-        if (m) m.classList.add('hidden');
-      };
-
-      document.addEventListener('DOMContentLoaded', function() {
-        window.restoreSession();
+    document.addEventListener("DOMContentLoaded", function() {
+      // Bind click handlers to all login submit buttons
+      var btns = document.querySelectorAll('button, input[type="submit"], a');
+      btns.forEach(function(b) {
+        var txt = (b.innerText || b.value || '').toUpperCase();
+        if (txt.includes('SIGN IN') || txt.includes('LOGIN') || txt.includes('ACCESS')) {
+          b.onclick = executeLogin;
+        }
       });
-    })();
+
+      // Bind form submissions
+      var forms = document.querySelectorAll('form');
+      forms.forEach(function(f) {
+        f.onsubmit = function(e) {
+          e.preventDefault();
+          var auth = document.getElementById('auth-screen');
+          if (auth && !auth.classList.contains('hidden') && auth.style.display !== 'none') {
+            executeLogin(e);
+          }
+          return false;
+        };
+      });
+
+      // Restore session on load
+      try {
+        var isLogged = localStorage.getItem('esys_logged_in');
+        var saved = localStorage.getItem('esys_active_user');
+        if (isLogged === 'true' && saved) {
+          var u = JSON.parse(saved);
+          if (u && u.name) {
+            window.currentUser = Object.assign(window.currentUser, u);
+            executeLogin();
+          }
+        }
+      } catch(err) {}
+    });
   </script>
 
 </body></html>";
