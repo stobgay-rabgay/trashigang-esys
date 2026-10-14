@@ -1425,7 +1425,27 @@
               </div>
             </div>
 
-            <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2.5 rounded-lg shadow text-xs uppercase transition">
+            
+        <!-- JOINT SECTOR SELECTION BLOCK -->
+        <div class="border rounded-lg p-3 bg-slate-50 space-y-3 my-4">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="is-joint-checkbox" onchange="var c = document.getElementById('joint-fields-box'); if(c) { if(this.checked) c.classList.remove('hidden'); else c.classList.add('hidden'); }" class="rounded text-orange-600 focus:ring-orange-500 w-4 h-4">
+            <label for="is-joint-checkbox" class="text-xs font-bold text-gray-800 cursor-pointer">Is this a Joint Sector Notesheet?</label>
+          </div>
+          
+          <div id="joint-fields-box" class="hidden space-y-3 pt-2 border-t border-gray-200">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">Co-Sponsoring / Joint Sectors</label>
+              <input type="text" id="joint-sectors-input" placeholder="e.g. Planning Sector, Finance Sector, Engineering" class="w-full border border-gray-300 rounded p-2 text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">Verifier Officer Name & Title</label>
+              <input type="text" id="joint-verifier-input" placeholder="e.g. Tashi Namgyal (Planning Officer)" class="w-full border border-gray-300 rounded p-2 text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none">
+            </div>
+          </div>
+        </div>
+
+<button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-2.5 rounded-lg shadow text-xs uppercase transition">
               🚀 Submit Sanction Request
             </button>
           </form>
