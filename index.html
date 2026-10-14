@@ -34,29 +34,76 @@
     }
 
 
-    // Save and load logged-in user session across reloads
-    function saveUserSession(user) {
-      localStorage.setItem("esys_active_user", JSON.stringify(user));
+    // Full user session management & initialization
+    function saveActiveSession(userData) {
+      localStorage.setItem('esys_active_user', JSON.stringify(userData));
     }
 
-    function loadUserSession() {
-      const stored = localStorage.getItem("esys_active_user");
+    function restoreActiveSession() {
+      const stored = localStorage.getItem('esys_active_user');
       if (stored) {
         try {
-          const u = JSON.parse(stored);
-          if (u && u.name) {
-            currentUser = u;
-            const disp = document.getElementById('user-display-name') || document.querySelector('.user-name');
-            if (disp) disp.innerText = u.name;
+          const user = JSON.parse(stored);
+          if (user && user.name) {
+            currentUser = user;
+            
+            // Update UI Header
+            const userDisp = document.getElementById('user-display-name') || document.querySelector('.user-name');
+            const userEid = document.getElementById('user-emp-id');
+            const userAvatar = document.getElementById('user-avatar');
+            
+            if (userDisp) userDisp.innerText = user.name + (user.roleTitle ? ' (' + user.roleTitle + ')' : '');
+            if (userEid) userEid.innerText = 'EID: ' + (user.eid || 'Verified');
+            if (userAvatar && user.name) {
+              userAvatar.innerText = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            }
+
+            // Reveal App Dashboard directly
             const authScreen = document.getElementById('auth-screen');
             const appScreen = document.getElementById('app-screen');
             if (authScreen) authScreen.classList.add('hidden');
-            if (appScreen) appScreen.classList.remove('hidden');
+            if (appScreen) {
+              appScreen.classList.remove('hidden');
+              appScreen.style.display = 'block';
+            }
+            
+            var body = document.getElementById('page-body') || document.body;
+            if (body) body.className = 'bg-gray-100 font-sans min-h-screen';
+            
+            if (typeof renderWorkspace === 'function') renderWorkspace();
           }
-        } catch(e){}
+        } catch(e) {}
       }
     }
-    document.addEventListener("DOMContentLoaded", loadUserSession);
+
+    // Intercept login to save session
+    var originalLogin = typeof handleLogin === 'function' ? handleLogin : null;
+    function handleLogin(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      
+      const nameInput = document.getElementById('login-name') || document.getElementById('prof-name');
+      const eidInput = document.getElementById('login-eid') || document.getElementById('prof-eid');
+      
+      if (nameInput && nameInput.value) currentUser.name = nameInput.value;
+      if (eidInput && eidInput.value) currentUser.eid = eidInput.value;
+      
+      saveActiveSession(currentUser);
+      
+      if (originalLogin && originalLogin !== handleLogin) {
+        originalLogin(e);
+      } else {
+        const authScreen = document.getElementById('auth-screen');
+        const appScreen = document.getElementById('app-screen');
+        if (authScreen) authScreen.classList.add('hidden');
+        if (appScreen) {
+          appScreen.classList.remove('hidden');
+          appScreen.style.display = 'block';
+        }
+      }
+      return false;
+    }
+
+    document.addEventListener("DOMContentLoaded", restoreActiveSession);
 
 </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
