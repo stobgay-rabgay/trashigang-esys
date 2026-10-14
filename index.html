@@ -4,7 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trashigang Dzongkhag E-Sys</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com">
+    function toggleJointFields(checked) {
+      var container = document.getElementById('joint-fields-container');
+      if (container) {
+        if (checked) container.classList.remove('hidden');
+        else container.classList.add('hidden');
+      }
+    }
+
+</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     @media print {
